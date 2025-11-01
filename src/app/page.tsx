@@ -1,23 +1,24 @@
-'use client';
+import { AboutSection } from '@/components/features/home/aboutSection';
+import { HeroSection } from '@/components/features/home/heroSection';
+import { ProjectHighlight } from '@/components/features/home/projectHighlight';
 
-import React from 'react';
+/**
+ * Homepage - Server Component
+ * This page is a "Server Component" by default. It fetches no data,
+ * but it composes other components. `AboutSection` and `HeroSection`
+ * are Client Components for animations, but the page itself is not.
+ */
+export default function HomePage() {
+  return (
+    <>
+      {/* HeroSection is a Client Component for its <Link> buttons and animations */}
+      <HeroSection />
 
-const HomePage: React.FC = () => (
-  <div className="h-[calc(100vh-6rem)] flex items-center p-4">
-    <div className="max-w-7xl mx-auto">
-      <p className="text-lg text-blue-600 dark:text-blue-300 font-semibold mb-2">
-        CHRISTOPHER JULIUS LIMANTORO
-      </p>
-      <h1 className="text-6xl md:text-8xl font-bold text-gray-900 dark:text-white leading-tight">
-        Software Engineer <br />
-        AI Engineer
-      </h1>
-      <p className="mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
-        I design and build intelligent, human-centered digital experiences that
-        are performant, elegant, and solve real-world problems.
-      </p>
-    </div>
-  </div>
-);
+      {/* AboutSection is a Client Component for its `motion` animations */}
+      <AboutSection />
 
-export default HomePage;
+      {/* ProjectHighlight can be a Server Component as it just renders static info */}
+      <ProjectHighlight />
+    </>
+  );
+}
