@@ -19,17 +19,18 @@ type BlogPostPageProps = {
  * This page uses the `[id]` in the URL (from `params`) to
  * fetch and render a single blog post.
  */
-export default function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = getBlogPostById(params.id);
+export default async function BlogPostPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const post = getBlogPostById(id);
 
-  // Handle case where post isn't found
-  if (!post) {
-    notFound(); // Triggers the 404 page
-  }
+  if (!post) notFound();
 
-  // Get other posts for "Related" section
   const relatedPosts = getBlogPosts()
-    .filter((p) => p.id !== params.id)
+    .filter((p) => p.id !== id)
     .slice(0, 2);
 
   return (
@@ -79,10 +80,8 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
             <p className="text-cyan-200">{post.aiSummary}</p>
           </div>
 
-          {/* Article Content */}
           <BlogPost content={post.content} />
 
-          {/* Related Posts */}
           <div className="mt-16 pt-8 border-t border-slate-800/50">
             <h3 className="mb-6 text-white">Related Posts</h3>
             <div className="grid md:grid-cols-2 gap-6">
