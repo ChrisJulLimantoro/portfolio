@@ -1,4 +1,4 @@
-import { AboutSection } from '@/components/features/home/aboutSection';
+import { MyJourneySection } from '@/components/features/home/myjourneySection';
 import { HeroSection } from '@/components/features/home/heroSection';
 import { ProjectHighlight } from '@/components/features/home/projectHighlight';
 
@@ -15,7 +15,7 @@ export default function HomePage() {
       <HeroSection />
 
       {/* AboutSection is a Client Component for its `motion` animations */}
-      <AboutSection />
+      <MyJourneySection />
 
       {/* ProjectHighlight can be a Server Component as it just renders static info */}
       <ProjectHighlight />
