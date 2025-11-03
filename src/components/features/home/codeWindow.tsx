@@ -14,8 +14,11 @@ interface CodeWindowProps {
   typingSpeed?: number;
   lineDelay?: number;
   snippetDelay?: number;
+  // keep these for optional overrides, but we use tailwind classes for common responsive sizes
   width?: string;
   height?: string;
+  // max lines to show on small screens (default 2)
+  maxLinesOnMobile?: number;
 }
 
 export function CodeWindow({
@@ -23,8 +26,9 @@ export function CodeWindow({
   typingSpeed = 28,
   lineDelay = 120,
   snippetDelay = 2000,
-  width = '640px',
-  height = '380px',
+  width,
+  height,
+  maxLinesOnMobile = 2,
 }: CodeWindowProps) {
   const [snippetIndex, setSnippetIndex] = useState(0);
   const [fileDisplay, setFileDisplay] = useState('');
@@ -32,17 +36,40 @@ export function CodeWindow({
   const [currentLineText, setCurrentLineText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const timers = useRef<number[]>([]);
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window !== 'undefined'
+      ? window.matchMedia('(max-width: 767px)').matches
+      : false
+  );
 
   const clearAllTimers = () => {
     timers.current.forEach((id) => clearTimeout(id));
     timers.current = [];
   };
 
+  // update mobile flag on resize / media change
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(max-width: 767px)');
+    const handler = (e: MediaQueryListEvent | MediaQueryList) =>
+      setIsMobile(Boolean((e as any).matches ?? e.matches));
+    // initial
+    setIsMobile(mq.matches);
+    // add listener (modern + fallback)
+    if (mq.addEventListener) mq.addEventListener('change', handler);
+    else mq.addListener(handler);
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener('change', handler);
+      else mq.removeListener(handler);
+    };
+  }, []);
+
   useEffect(() => {
     if (!snippets || snippets.length === 0) return;
-    let fIdx = 0;
-    const snippet = snippets[snippetIndex];
     clearAllTimers();
+
+    const snippet = snippets[snippetIndex];
+    let fIdx = 0;
 
     // Reset states for new snippet
     setCompletedLines([]);
@@ -50,30 +77,58 @@ export function CodeWindow({
     setFileDisplay('~');
     setIsTyping(true);
 
+    // Helper: build lines, and if mobile, truncate to maxLinesOnMobile
+    const buildLines = () => {
+      const allLines = [
+        ...(snippet.imports || []),
+        '',
+        ...(snippet.body || []),
+      ];
+
+      if (!isMobile) return allLines;
+
+      // On mobile: prefer showing one import (if exists) + first body line (or two body lines)
+      const mobileLines: string[] = [];
+      if (snippet.imports && snippet.imports.length > 0) {
+        mobileLines.push(snippet.imports[0]);
+      }
+      // skip the explicit blank if nothing else
+      const bodies = snippet.body || [];
+      if (bodies.length > 0) {
+        mobileLines.push(bodies[0]);
+        // optionally include second body line if maxLinesOnMobile >= 2
+        if (maxLinesOnMobile >= 2 && bodies.length > 1) {
+          // add second only if it gives meaning (avoid very long single-line pushes)
+          mobileLines.push(bodies[1]);
+        }
+      }
+      // ensure at least one line is present
+      if (mobileLines.length === 0 && allLines.length > 0) {
+        mobileLines.push(allLines[0]);
+      }
+      return mobileLines;
+    };
+
     /* --- Step 1: Type filename --- */
     const name = snippet.filename ?? '';
 
     const typeFilename = () => {
-      // ✅ stop cleanly
       if (fIdx >= name.length) {
         const t = window.setTimeout(startTypingCode, 300);
         timers.current.push(t);
         return;
       }
 
-      // ✅ type exactly one character
       setFileDisplay((prev) => prev + name.charAt(fIdx));
-
       fIdx++;
 
-      // ✅ schedule next only *after* increment
-      const t = window.setTimeout(typeFilename, typingSpeed);
+      const t = window.setTimeout(typeFilename, Math.max(12, typingSpeed)); // slightly faster for fluidity
       timers.current.push(t);
     };
 
     /* --- Step 2: Type lines sequentially --- */
     const startTypingCode = () => {
-      const lines = [...(snippet.imports || []), '', ...(snippet.body || [])];
+      const lines = buildLines();
 
       const typeLine = (idx: number) => {
         if (idx >= lines.length) {
@@ -101,7 +156,10 @@ export function CodeWindow({
           cPos++;
 
           if (cPos < line.length) {
-            const t = window.setTimeout(tick, typingSpeed);
+            const t = window.setTimeout(
+              tick,
+              isMobile ? Math.max(8, typingSpeed - 6) : typingSpeed
+            );
             timers.current.push(t);
           } else {
             const t = window.setTimeout(() => {
@@ -109,7 +167,7 @@ export function CodeWindow({
               setCurrentLineText('');
               const tNext = window.setTimeout(
                 () => typeLine(idx + 1),
-                lineDelay
+                isMobile ? Math.max(60, lineDelay - 20) : lineDelay
               );
               timers.current.push(tNext);
             }, 80);
@@ -125,15 +183,34 @@ export function CodeWindow({
     typeFilename();
 
     return () => clearAllTimers();
-  }, [snippetIndex, snippets, typingSpeed, lineDelay, snippetDelay]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    snippetIndex,
+    snippets,
+    typingSpeed,
+    lineDelay,
+    snippetDelay,
+    isMobile,
+    maxLinesOnMobile,
+  ]);
 
   const snippet = snippets[snippetIndex];
 
+  // Responsive container classes:
+  // - full width on small screens with smaller height
+  // - fixed sizes on medium/large screens
+  const containerClass =
+    'relative rounded-xl bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-700/50 shadow-2xl backdrop-blur-sm overflow-hidden ' +
+    // width / height responsive classes:
+    'w-full sm:w-full md:w-full h-36 sm:h-36 md:h-80';
+
+  // Allow user overrides for width/height if provided (keeps backward compatibility)
+  const styleOverrides: React.CSSProperties = {};
+  if (width) styleOverrides.width = width;
+  if (height) styleOverrides.height = height;
+
   return (
-    <div
-      className="relative rounded-xl bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-700/50 shadow-2xl backdrop-blur-sm overflow-hidden"
-      style={{ width, height }}
-    >
+    <div className={containerClass} style={styleOverrides}>
       {/* Header */}
       <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-700/50 bg-slate-900/50">
         <div className="flex gap-2">
@@ -142,20 +219,21 @@ export function CodeWindow({
           <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
         </div>
 
-        <div className="text-slate-400 text-sm ml-4 font-mono flex items-center">
-          <span>{fileDisplay}</span>
-          {isTyping && fileDisplay.length < snippet.filename.length && (
-            <motion.span
-              className="inline-block w-2 h-4 bg-emerald-400 ml-[2px]"
-              animate={{ opacity: [1, 0, 1] }}
-              transition={{ duration: 0.8, repeat: Infinity }}
-            />
-          )}
+        <div className="text-slate-400 text-sm ml-4 font-mono flex items-center overflow-hidden">
+          <span className="truncate">{fileDisplay}</span>
+          {isTyping &&
+            fileDisplay.length < (snippet?.filename?.length ?? 0) && (
+              <motion.span
+                className="inline-block w-2 h-4 bg-emerald-400 ml-[2px]"
+                animate={{ opacity: [1, 0, 1] }}
+                transition={{ duration: 0.8, repeat: Infinity }}
+              />
+            )}
         </div>
       </div>
 
       {/* Code area (scrollable) */}
-      <div className="p-6 font-mono text-sm text-slate-300 overflow-y-auto h-[calc(100%-48px)] scrollbar-thin scrollbar-thumb-slate-700/60 scrollbar-track-transparent">
+      <div className="p-4 sm:p-6 font-mono text-sm sm:text-sm md:text-sm text-slate-300 overflow-y-auto h-[calc(100%-48px)] scrollbar-thin scrollbar-thumb-slate-700/60 scrollbar-track-transparent">
         {completedLines.map((line, idx) => (
           <div
             key={idx}

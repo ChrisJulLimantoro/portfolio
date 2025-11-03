@@ -3,9 +3,24 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Code2, Sparkles, BookOpen } from 'lucide-react';
 import { CodeWindow } from './codeWindow';
+import { useState, useEffect } from 'react';
 
 export function HeroSection() {
-  const codeSnippets = [
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(max-width: 767px)');
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    if (mq.addEventListener) mq.addEventListener('change', handler);
+    else mq.addListener(handler);
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener('change', handler);
+      else mq.removeListener(handler);
+    };
+  }, []);
+  const desktopSnippets = [
     {
       filename: '~/portfolio/services.ts',
       imports: ["import { Microservice, AI } from '@backend/core';"],
@@ -29,7 +44,34 @@ export function HeroSection() {
         '};',
       ],
     },
+    {
+      filename: '~/portfolio/application.swift',
+      imports: ['import SwiftUI', 'import SwiftData'],
+      body: [
+        'struct MyView : View {',
+        '  @Binding private var achievementList: [string]',
+        '  var body : some View {',
+        '    PortfolioComponent(achievement: achievementList)',
+        '      .opacity(0.8)',
+        '  }',
+        '}',
+      ],
+    },
   ];
+
+  const mobileSnippets = [
+    {
+      filename: '~/mobile/services.ts',
+      imports: ["import { AI } from '@core/ai';"],
+      body: ["const ai = AI.integrate('mobile');"],
+    },
+    {
+      filename: '~/mobile/ui.tsx',
+      imports: ["import { NextUI } from '@frontend/ui';"],
+      body: ['<NextUI minimal />'],
+    },
+  ];
+
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden pt-20">
       <div className="max-w-7xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-12 items-center w-full">
@@ -140,7 +182,11 @@ export function HeroSection() {
         </div>
 
         {/* Right Column - Visual Elements */}
-        <CodeWindow snippets={codeSnippets} />
+        <CodeWindow
+          snippets={isMobile ? mobileSnippets : desktopSnippets}
+          typingSpeed={26}
+          snippetDelay={2500}
+        />
       </div>
     </section>
   );
