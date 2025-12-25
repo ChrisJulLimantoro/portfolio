@@ -20,7 +20,7 @@ export function Footer() {
               asChild
             >
               <a
-                href="https://github.com"
+                href="https://github.com/ChrisJulLimantoro"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub"
@@ -35,7 +35,7 @@ export function Footer() {
               asChild
             >
               <a
-                href="https://linkedin.com"
+                href="https://linkedin.com/in/christopher-Julius-limantoro"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"
@@ -49,7 +49,7 @@ export function Footer() {
               className="hover:bg-slate-800/50 hover:text-cyan-400 text-slate-400"
               asChild
             >
-              <a href="mailto:contact@example.com" aria-label="Email">
+              <a href="mailto:christopherlimantoro@gmail.com" aria-label="Email">
                 <Mail size={20} />
               </a>
             </Button>

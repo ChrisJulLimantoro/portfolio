@@ -3,86 +3,214 @@
 
 // --- PROJECTS ---
 
+export type ProjectImage = {
+  src: string;
+  orientation: 'landscape' | 'portrait' | 'square';
+};
+
 export type Project = {
+  slug: string;
   title: string;
   description: string;
+  longDescription: string;
   tags: string[];
-  language: string;
-  framework: string;
+  languages: string[];
+  frameworks: string[];
   category: string;
-  aiHighlight: string;
+  highlights: string[];
+  images: ProjectImage[];
+  links?: {
+    github?: string;
+    live?: string;
+    appStore?: string;
+  };
 };
 
 const allProjects: Project[] = [
   {
-    title: 'Microservices API Gateway',
+    slug: 'randl',
+    title: 'RandL',
     description:
-      'Scalable API gateway with service mesh architecture, intelligent routing, and distributed tracing for microservices communication.',
-    tags: ['Node.js', 'Docker', 'Kubernetes', 'gRPC'],
-    language: 'JavaScript',
-    framework: 'Express',
-    category: 'Backend',
-    aiHighlight:
-      'Handles 10K+ concurrent requests with AI-powered load balancing and automatic service discovery.',
+      'Empowering drummers through technology. RandL is an iOS app that combines custom Arduino hardware with interactive lessons to master drum rudiments.',
+    longDescription:
+      'RandL is a revolutionary educational platform developed as a collaborative effort by a team of six passionate creators. It bridges the gap between traditional practice and digital precision by integrating a custom-crafted Arduino drum pad with an intuitive SwiftUI application. Designed specifically to teach the "Fundamentals of Rudiments," RandL provides a tactile and interactive learning experience that helps drummers of all levels build solid technical foundations. This project showcases the perfect synergy between hardware engineering, mobile development, and educational design.',
+    tags: ['iOS', 'Arduino', 'IoT', 'Machine Learning', 'Education'],
+    languages: ['Swift', 'C++'],
+    frameworks: ['SwiftUI', 'Combine'],
+    category: 'Application',
+    highlights: [
+      'Implements real-time rhythm analysis and gesture recognition to provide instant corrective feedback.',
+      'Features a custom-crafted Arduino drum pad integrated seamlessly with the iOS application.',
+      'Designed to teach the "Fundamentals of Rudiments" through a tactile and interactive experience.',
+    ],
+    images: [
+      { src: '/images/randl/web.png', orientation: 'landscape' },
+      { src: '/images/randl/onboard.png', orientation: 'portrait' },
+      { src: '/images/randl/result.png', orientation: 'landscape' },
+      { src: '/images/randl/module.png', orientation: 'portrait' },
+      { src: '/images/randl/history.png', orientation: 'portrait' },
+      { src: '/images/randl/training.png', orientation: 'landscape' },
+    ],
+    links: {
+      live: 'https://randlpad.com',
+      appStore: 'https://apps.apple.com/app/randl',
+    },
   },
   {
-    title: 'AI-Powered Chat Application',
+    slug: 'batavia',
+    title: 'Batavia',
     description:
-      'Real-time chat platform with AI-driven features including smart replies, sentiment analysis, and context-aware responses.',
-    tags: ['React', 'Swift', 'OpenAI', 'WebSocket'],
-    language: 'JavaScript',
-    framework: 'React',
-    category: 'AI',
-    aiHighlight:
-      'Integrates GPT-4 for intelligent chat suggestions with 95% user satisfaction rating.',
+      'Preserving Indonesian cultural heritage through a digital showcase and global batik marketplace.',
+    longDescription:
+      'Batavia is a web-based platform developed by my team and me during a 3-day hackathon, aimed at cultivating and enhancing Indonesia’s cultural legacy through technology. The project focuses on showcasing Indonesia’s finest batik and cultural elements in a modern, visually engaging website. Beyond cultural storytelling, Batavia integrates a marketplace feature that allows users to browse batik products from various regions, making Indonesian heritage more accessible to a global audience. Despite the limited development time, the project demonstrates strong collaboration, rapid ideation, and the ability to translate cultural values into a functional digital experience.',
+    tags: ['3D-Hackathon', 'Web Development', 'Culture', 'Batik', 'Marketplace', 'Indonesia'],
+    languages: ['PHP', 'JavaScript'],
+    frameworks: ['Laravel', 'Tailwind CSS'],
+    category: 'Website',
+    highlights: [
+      'Developed as a complete hackathon project within a strict 3-day timeframe.',
+      'Combines cultural storytelling with a marketplace to promote Indonesian batik globally.',
+      'Designed to cultivate appreciation for Indonesian cultural heritage through a modern web experience.',
+    ],
+    images: [
+      { src: '/images/batavia/home.png', orientation: 'landscape' },
+      { src: '/images/batavia/home-2.png', orientation: 'landscape' },
+      { src: '/images/batavia/home-3.png', orientation: 'landscape' },
+      { src: '/images/batavia/madura.png', orientation: 'portrait' },
+    ],
+    links: {
+      github: 'https://github.com/ChrisJulLimantoro/PDA_Batavia',
+    },
   },
   {
-    title: 'Swift iOS Design System',
+    slug: 'portfolio-blog',
+    title: 'Portfolio & Blog',
     description:
-      'Comprehensive design system for iOS applications with reusable SwiftUI components, animations, and accessibility features.',
-    tags: ['Swift', 'SwiftUI', 'iOS', 'UIKit'],
-    language: 'Swift',
-    framework: 'SwiftUI',
-    category: 'Mobile',
-    aiHighlight:
-      'Reduces development time by 40% with modular components and automated theming system.',
+      'A lifetime project to enhance my portfolio as well as blog to share my story and learning throughout my process being a Software Developer.',
+    longDescription:
+      'This portfolio website is more than just a showcase; it is a living document of my journey as a software developer. Built with a focus on clean aesthetics and smooth user experience, it integrates a blog where I share technical insights, project post-mortems, and personal growth stories. The project is continuously evolving, serving as both a professional landing page and a creative outlet for my thoughts on technology and lifelong learning.',
+    tags: ['Personal', 'Web Development', 'Blog', 'Portfolio'],
+    languages: ['TypeScript', 'JavaScript'],
+    frameworks: ['Next.js', 'Framer Motion'],
+    category: 'Website',
+    highlights: [
+      'Serving as a central hub for my professional portfolio and technical blog.',
+      'Designed with modern aesthetics and smooth animations for an engaging user experience.',
+      'A lifetime project that evolves alongside my career and technical expertise.',
+    ],
+    images: [
+      { src: '/images/portfolio/home.png', orientation: 'landscape' }, 
+      { src: '/images/portfolio/journey.png', orientation: 'portrait' }, 
+      { src: '/images/portfolio/blog.png', orientation: 'portrait' },
+      { src: '/images/portfolio/projects.png', orientation: 'landscape'},
+      { src: '/images/portfolio/showcase.png', orientation: 'portrait' },
+      { src: '/images/portfolio/list.png', orientation: 'landscape' },
+    ],
+    links: {
+      github: 'https://github.com/ChrisJulLimantoro/portfolio',
+      live: 'https://portfolio-chris-julius.vercel.app',
+    },
   },
   {
-    title: 'E-Commerce Backend',
+    slug: 'otterator',
+    title: 'Otterator',
     description:
-      'Microservices-based e-commerce platform with order processing, inventory management, and payment integration.',
-    tags: ['Node.js', 'PostgreSQL', 'Redis', 'Stripe'],
-    language: 'JavaScript',
-    framework: 'Express',
-    category: 'Backend',
-    aiHighlight:
-      'Processes 5K+ orders daily with 99.9% uptime and automated fraud detection.',
+      'Master the art of public speaking with AI. Otterator provides a personalized practice environment to refine your intonation, pacing, and storytelling.',
+    longDescription:
+      'Otterator is an AI-driven educational platform designed to transform how individuals prepare for presentations. By leveraging advanced speech analysis, it creates tailored study sessions that go beyond mere script writing. The app focuses on the core pillars of effective storytelling: intonation, strategic pauses, and speech speed. Otterator acts as a private coach, helping users to independently practice and gain the confidence needed to deliver impactful presentations that resonate with their audience.',
+    tags: ['AI-Powered', 'Public Speaking', 'Education', 'Speech Analysis', 'Storytelling', 'iOS'],
+    languages: ['Swift'],
+    frameworks: ['SwiftUI', 'CoreML', 'AVFoundation'],
+    category: 'AI / Education',
+    highlights: [
+      'Analyzes speech patterns in real-time to provide feedback on intonation, pauses, and speed.',
+      'Generates personalized study sessions based on the user\'s specific presentation goals.',
+      'Empowers users to practice independently and refine their storytelling skills without needing a live audience.',
+    ],
+    images: [
+      { src: '/images/otterator/panel.webp', orientation: 'landscape' },
+      { src: '/images/otterator/design.png', orientation: 'square' },
+      { src: '/images/otterator/icon.png', orientation: 'square' },
+    ],
+    links: {
+      github: 'https://github.com/ChrisJulLimantoro/Otterator',
+    },
   },
   {
-    title: 'React Dashboard Framework',
+    slug: 'food-gpt',
+    title: 'FoodGPT',
     description:
-      'Modern dashboard framework with real-time data visualization, customizable widgets, and responsive design.',
-    tags: ['React', 'TypeScript', 'Recharts', 'TailwindCSS'],
-    language: 'TypeScript',
-    framework: 'React',
-    category: 'Frontend',
-    aiHighlight:
-      'Renders complex data visualizations with AI-powered insights and anomaly detection.',
+      'Personalized AI food recommendation system that understands your cravings. Get suggestions based on trends, your mood, and consumption history.',
+    longDescription:
+      'FoodGPT is an experimental, AI-driven platform designed to solve the "what to eat" dilemma. It features a sophisticated chatbot interface that leverages Large Language Models to provide conversational food recommendations. By analyzing current food trends, the user\'s emotional state (mood), and past purchase history, FoodGPT offers highly personalized suggestions that feel truly intuitive. This project is currently in an active development phase, focusing on fine-tuning specialized datasets to improve recommendation accuracy and conversational flow.',
+    tags: ['AI', 'Machine Learning', 'Data Science', 'Experimental', 'Fun'],
+    languages: ['Python', 'Dart'],
+    frameworks: ['PyTorch', 'Flutter', 'Flask'],
+    category: 'AI / Fun Project',
+    highlights: [
+      'Interactive GPT-powered chatbot for natural, conversational food discovery.',
+      'Dynamic recommendation engine factoring in real-time trends and user mood.',
+      'Currently in development: Training custom datasets for hyper-local food knowledge.',
+    ],
+    images: [
+      { src: '/images/food-gpt/new-1.png', orientation: 'portrait' },
+      { src: '/images/food-gpt/history-1.png', orientation: 'portrait' },
+      { src: '/images/food-gpt/history-2.png', orientation: 'portrait' },
+    ],
+    links: {},
   },
+  // {
+  //   slug: 'anony-tweet',
+  //   title: 'AnonyTweet',
+  //   description:
+  //     'A Twitter look-alike social media application built with Flutter, focusing on privacy and seamless user interaction.',
+  //   longDescription:
+  //     'AnonyTweet is a cross-platform social media application that replicates the core functionality of Twitter while emphasizing user privacy. Developed using Flutter, the app provides a smooth, native-like experience on both iOS and Android. Features include real-time micro-blogging, user interactions, and a sleek dark-themed UI. This project served as a deep dive into Flutter widgets, state management, and building performant mobile interfaces.',
+  //   tags: ['Mobile Development', 'Social Media', 'Twitter-Clone'],
+  //   languages: ['Dart'],
+  //   frameworks: ['Flutter', 'Firebase'],
+  //   category: 'Application',
+  //   highlights: [
+  //     'Cross-platform mobile application with a smooth and responsive Twitter-like interface.',
+  //     'Implements real-time updates and seamless user interactions using Flutter.',
+  //     'Focuses on privacy-centric social networking features in a modern mobile environment.',
+  //   ],
+  //   images: [
+  //     { src: '', orientation: 'portrait' },
+  //     { src: '', orientation: 'portrait' },
+  //   ],
+  //   links: {
+  //     github: 'https://github.com/ChrisJulLimantoro/anony-tweet',
+  //   },
+  // },
   {
-    title: 'Mobile Fitness Tracker',
+    slug: 'bharatikafest-2024',
+    title: 'Bharatikafest 2024',
     description:
-      'iOS fitness tracking app with workout planning, progress tracking, and social features built with Swift.',
-    tags: ['Swift', 'Core Data', 'HealthKit', 'SwiftUI'],
-    language: 'Swift',
-    framework: 'SwiftUI',
-    category: 'Mobile',
-    aiHighlight:
-      'Uses ML to provide personalized workout recommendations based on user performance.',
+      'Official registration and management platform for Petra Christian University\'s most prestigious art competition.',
+    longDescription:
+      'Bharatikafest 2024 is a comprehensive web solution designed to host Indonesia\'s premier student art competition. The platform streamlined the entire lifecycle of the festival, from participant onboarding to the submission of digital artworks. It featured a dedicated admin dashboard for competition management, automated participant verification, and a secure asset repository for high-resolution uploads. The project was built to ensure stability during peak traffic periods while maintaining a premium aesthetic that aligned with the festival\'s artistic identity.',
+    tags: ['Art Festival', 'Competition', 'Petra Christian University', 'Registration System'],
+    languages: ['PHP', 'JavaScript'],
+    frameworks: ['Laravel', 'Tailwind CSS'],
+    category: 'Website',
+    highlights: [
+      'Engineered a scalable registration system handling thousands of student entries simultaneously.',
+      'Developed a robust asset management module for high-resolution artwork uploads and competition tracking.',
+      'Created a premium, responsive interface that prioritized both artistic expression and user efficiency.',
+    ],
+    images: [
+      { src: '/images/bharatikafest/judges.png', orientation: 'landscape' },
+      { src: '/images/bharatikafest/timeline.png', orientation: 'landscape' },
+    ],
+    links: {},
   },
 ];
 
 export const getProjects = () => allProjects;
+
+export const getProjectBySlug = (slug: string) =>
+  allProjects.find((project) => project.slug === slug);
 
 // --- BLOG ---
 

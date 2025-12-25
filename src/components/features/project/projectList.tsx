@@ -34,12 +34,20 @@ export function ProjectList({ allProjects }: ProjectListProps) {
         project.tags.some((tag) =>
           tag.toLowerCase().includes(searchQuery.toLowerCase())
         ) ||
-        project.aiHighlight.toLowerCase().includes(searchQuery.toLowerCase());
+        project.languages.some((l) =>
+          l.toLowerCase().includes(searchQuery.toLowerCase())
+        ) ||
+        project.frameworks.some((f) =>
+          f.toLowerCase().includes(searchQuery.toLowerCase())
+        ) ||
+        project.highlights.some((h) =>
+          h.toLowerCase().includes(searchQuery.toLowerCase())
+        );
 
       const matchesLanguage =
-        languageFilter === 'all' || project.language === languageFilter;
+        languageFilter === 'all' || project.languages.includes(languageFilter);
       const matchesFramework =
-        frameworkFilter === 'all' || project.framework === frameworkFilter;
+        frameworkFilter === 'all' || project.frameworks.includes(frameworkFilter);
       const matchesCategory =
         categoryFilter === 'all' || project.category === categoryFilter;
 
@@ -56,8 +64,8 @@ export function ProjectList({ allProjects }: ProjectListProps) {
   ]);
 
   // Derive filters from the *full* list of projects
-  const languages = Array.from(new Set(allProjects.map((p) => p.language)));
-  const frameworks = Array.from(new Set(allProjects.map((p) => p.framework)));
+  const languages = Array.from(new Set(allProjects.flatMap((p) => p.languages)));
+  const frameworks = Array.from(new Set(allProjects.flatMap((p) => p.frameworks)));
   const categories = Array.from(new Set(allProjects.map((p) => p.category)));
 
   return (
@@ -66,7 +74,7 @@ export function ProjectList({ allProjects }: ProjectListProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <h1 className="mb-6 text-white">All Projects</h1>
+      <h1 className="font-display font-bold text-6xl md:text-8xl text-white mb-10">All Projects</h1>
       <p className="text-slate-400 mb-12 max-w-3xl text-lg">
         Browse through all my projects and repositories. Use the search and
         filters to find specific technologies or topics.
@@ -168,7 +176,12 @@ export function ProjectList({ allProjects }: ProjectListProps) {
       {/* Project Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredProjects.map((project, index) => (
-          <ProjectCard key={project.title} {...project} delay={index * 0.05} />
+          <ProjectCard 
+            key={project.title} 
+            {...project} 
+            image={project.images[0].src} 
+            delay={index * 0.05} 
+          />
         ))}
       </div>
 

@@ -21,7 +21,7 @@ export function BlogList({ blogPosts }: BlogListProps) {
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.5 }}
     >
-      <h1 className="mb-6 text-white">Blog</h1>
+      <h1 className="font-display font-bold text-6xl md:text-8xl text-white mb-10">Blog</h1>
       <p className="text-slate-400 mb-12 max-w-3xl text-lg">
         Thoughts on software architecture, AI systems, and full-stack
         development. Insights from building production systems at scale.
