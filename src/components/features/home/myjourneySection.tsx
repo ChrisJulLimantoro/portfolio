@@ -1,12 +1,49 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import Image from 'next/image';
+import { useRef } from 'react';
 
 export function MyJourneySection() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start end', 'end start'],
+  });
+
+  const y1 = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const y2 = useTransform(scrollYProgress, [0, 1], [0, -200]);
+  const y3 = useTransform(scrollYProgress, [0, 1], [0, -150]);
+  const y4 = useTransform(scrollYProgress, [0, 1], [0, -250]);
+
+  const mobileImages = [
+    { src: '/images/IMG_3987.jpg', y: y1, left: '5%', blur: 'blur-sm' },
+    { src: '/images/IMG_3982.jpg', y: y2, left: '60%', blur: 'blur-md' },
+    { src: '/images/FTR00997.jpeg', y: y3, left: '10%', blur: 'blur-sm' },
+    { src: '/images/IMG_2199.jpg', y: y4, left: '55%', blur: 'blur-md' },
+  ];
+
   return (
-    <section className="relative py-32 px-6 overflow-hidden">
-      <div className="max-w-6xl mx-auto flex flex-col items-center text-center relative">
+    <section ref={containerRef} className="relative py-32 px-6 overflow-hidden">
+      {/* Mobile Parallax Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none md:hidden z-0">
+        {mobileImages.map((img, i) => (
+          <motion.div
+            key={i}
+            style={{ y: img.y, left: img.left, top: `${20 + i * 20}%` }}
+            className={`absolute w-40 h-40 opacity-50 ${img.blur}`}
+          >
+            <Image
+              src={img.src}
+              alt="Journey background"
+              fill
+              className="object-cover rounded-xl transform rotate-12"
+            />
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="max-w-6xl mx-auto flex flex-col items-center text-center relative z-10">
         {/* Title */}
         <motion.h2
           initial={{ opacity: 0, y: 40 }}
@@ -19,12 +56,12 @@ export function MyJourneySection() {
 
         {/* Decorative Background Blur Effects */}
         <motion.div
-          className="absolute -top-10 -left-20 w-72 h-72 bg-cyan-500/20 blur-3xl rounded-full"
+          className="absolute -top-10 -left-20 w-72 h-72 bg-cyan-500/20 blur-3xl rounded-full -z-10"
           animate={{ y: [0, -15, 0] }}
           transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
-          className="absolute top-20 -right-20 w-80 h-80 bg-emerald-500/20 blur-3xl rounded-full"
+          className="absolute top-20 -right-20 w-80 h-80 bg-emerald-500/20 blur-3xl rounded-full -z-10"
           animate={{ y: [0, 20, 0] }}
           transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
         />
