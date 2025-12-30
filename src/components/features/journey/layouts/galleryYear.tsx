@@ -2,8 +2,8 @@
 import { JourneyYear } from '@/lib/data';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
+import { ArrowUpRight } from 'lucide-react';
 
 export function GalleryYear({ data }: { data: JourneyYear }) {
   return (
@@ -47,26 +47,40 @@ export function GalleryYear({ data }: { data: JourneyYear }) {
 
         {/* Side Stack */}
         <div className="md:col-span-4 flex flex-col gap-6">
-            {/* Achievements Card */}
-            <motion.div 
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                className="bg-zinc-900 border border-zinc-800 p-6 rounded-3xl flex-1 flex flex-col justify-center"
-            >
-                <h4 className="text-zinc-400 uppercase tracking-widest text-xs font-bold mb-6">Key Achievements</h4>
-                <ul className="space-y-4">
-                    {data.achievements.map((ach, i) => (
-                        <li key={i} className="flex flex-col gap-1">
-                            <span className="text-white font-bold text-lg leading-tight">{ach.title}</span>
-                            {ach.link && (
-                                <Link href={ach.link} className="text-pink-400 text-sm flex items-center gap-1 hover:underline">
-                                    {ach.linkText} <ArrowUpRight size={14}/>
-                                </Link>
-                            )}
-                        </li>
-                    ))}
-                </ul>
-            </motion.div>
+            {/* Stats / Summary Card */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="bg-slate-900/50 backdrop-blur-sm p-8 rounded-3xl border border-slate-800/50 h-full flex flex-col justify-center"
+          >
+            <h4 className="text-xl font-display font-bold text-white mb-6">Key Achievements</h4>
+            <div className="space-y-6">
+              {data.achievements.map((ach, i) => (
+                <div key={i} className="flex items-start gap-4 p-4 rounded-xl bg-slate-800/30">
+                   <div className="w-2 h-2 rounded-full bg-cyan-500 mt-2 shrink-0" />
+                   <div>
+                     <p className="text-slate-200 font-medium">{ach.title}</p>
+                     {ach.link && (
+                       <a href={ach.link} className="text-xs text-cyan-400 hover:underline mt-1 block">
+                          {ach.linkText || 'Learn more ->'}
+                       </a>
+                     )}
+                   </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 pt-6 border-t border-slate-800">
+               <Link 
+                 href={`/my-journey/${data.slug}`}
+                 className="block w-full py-3 text-center rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors text-sm font-medium"
+               >
+                 View Full Year Story
+               </Link>
+            </div>
+          </motion.div>
 
             {/* Secondary Photo */}
             {data.photos[1] && (

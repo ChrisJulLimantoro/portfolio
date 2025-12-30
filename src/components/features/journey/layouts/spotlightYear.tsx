@@ -66,21 +66,23 @@ export function SpotlightYear({ data }: { data: JourneyYear }) {
 
         {/* Achievements Buttons */}
         <div className="mt-12 flex flex-wrap justify-center gap-4">
-             {data.achievements.map((ach, i) => (
-                 ach.link ? (
-                    <Link
-                        key={i}
-                        href={ach.link}
-                        className="flex items-center gap-2 bg-white text-black px-6 py-3 rounded-full font-bold hover:bg-slate-200 transition-colors"
-                    >
-                        {ach.linkText || ach.title} <ArrowUpRight size={18} />
-                    </Link>
-                 ) : (
-                    <div key={i} className="px-6 py-3 rounded-full border border-slate-700 text-slate-300 font-medium">
-                        {ach.title}
-                    </div>
-                 )
-             ))}
+            {/* Actions */}
+            <div className="flex flex-wrap gap-4 pt-4">
+               <Link
+                href={`/my-journey/${data.slug}`}
+                className="px-6 py-3 rounded-full bg-cyan-500 text-slate-900 font-semibold hover:bg-cyan-400 transition-colors"
+               >
+                View Full Story
+               </Link>
+              {data.achievements[0]?.link && (
+                <a 
+                  href={data.achievements[0].link}
+                  className="px-6 py-3 rounded-full border border-slate-700 text-slate-300 hover:text-white hover:border-slate-500 transition-colors"
+                >
+                  {data.achievements[0].linkText || 'View Achievement'}
+                </a>
+              )}
+            </div>
         </div>
       </div>
     </div>

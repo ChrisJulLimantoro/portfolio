@@ -2,8 +2,8 @@
 import { JourneyYear } from '@/lib/data';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { ArrowUpRight, Trophy } from 'lucide-react';
 import Link from 'next/link';
+import { ArrowUpRight, Trophy } from 'lucide-react';
 
 export function ZigzagYear({ data }: { data: JourneyYear }) {
   return (
@@ -57,6 +57,12 @@ export function ZigzagYear({ data }: { data: JourneyYear }) {
                 </div>
               ))}
             </div>
+             <Link
+               href={`/my-journey/${data.slug}`}
+               className="mt-6 inline-block text-sm text-cyan-400 hover:underline font-medium"
+             >
+               Read full story &rarr;
+             </Link>
           </div>
         </div>
 
