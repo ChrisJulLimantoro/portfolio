@@ -16,7 +16,7 @@ const caveat = Caveat({
 import { ParallaxBackground } from '@/components/layout/parallaxBackground';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { FloatingChatbot } from '@/components/global/floatingChatbot';
+import { ChatWidget } from '@/components/features/chat/chatWidget';
 import React from 'react';
 import { ClientOnly } from '@/components/layout/clientOnly';
 
@@ -45,7 +45,7 @@ export default function RootLayout({
 
         <Footer />
 
-        <FloatingChatbot />
+        <ChatWidget />
       </body>
     </html>
   );

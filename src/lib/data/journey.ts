@@ -2,7 +2,8 @@ export type StoryBlock =
   | { type: 'text'; content: string; align?: 'left' | 'center' }
   | { type: 'image-grid'; images: { src: string; caption?: string }[] }
   | { type: 'stats'; items: { label: string; value: string }[] }
-  | { type: 'quote'; text: string; author?: string };
+  | { type: 'quote'; text: string; author?: string }
+  | { type: 'list'; items: { text: string; icon?: string }[] };
 
 export type JourneyYear = {
   year: string;
@@ -56,15 +57,38 @@ const journeyData: JourneyYear[] = [
       },
       {
         type: 'text',
-        content: `My thesis on **Logamas**, a multi-tenant gold merchant management system, pushed me to my limits, but it paid off. But even before graduation, opportunities were already knocking. While I was deep in thesis preparation, I received an offer to join **Apple's RnL program** — a direct continuation of my work at the Academy with **RandL** context.`,
+        content: `Before the graduation bells rang, 2025 threw everything at me at once. While I was deep in the trenches of my thesis, I received an offer for **Apple's RnL program**, a direct continuation of my Academy journey. But the first real victory was yet to come.`,
+      },
+      {
+        type: 'text',
+        content: `Teaming up with a friend for my first national hackathon, we built **Batavia**, a platform to preserve Indonesian culture. Despite the pressure of impending deadlines, we took home the **1st Place** win.`,
+      },
+      {
+        type: 'image-grid',
+        images: [
+          { src: '/images/batavia/home.png', caption: 'Batavia Homepage' },
+          { src: '/images/batavia/home-2.png', caption: 'Cultural Showcase' },
+        ]
       },
       {
         type: 'stats',
         items: [
-          { label: 'GPA', value: '3.98' },
-          { label: 'Thesis Score', value: 'A' },
-          { label: 'Offers', value: '3' },
-        ],
+           { label: 'Hackathon', value: '1st Place' },
+           { label: 'Team Size', value: '2' },
+           { label: 'Timeframe', value: '3 Days' },
+        ]
+      },
+      {
+        type: 'text',
+        content: `Riding the momentum of that win, I returned to complete my thesis on **Logamas**, a multi-tenant gold merchant management system. It pushed me to my limits, but it paid off.`,
+      },
+      {
+        type: 'list',
+        items: [
+           { text: 'Graduated with a **3.98 GPA**' },
+           { text: 'Achieved an **"A" Thesis Score**' },
+           { text: 'Secured **3 Job Offers** immediately upon graduation' },
+        ]
       },
       {
         type: 'text',
@@ -77,8 +101,13 @@ const journeyData: JourneyYear[] = [
       },
       {
         type: 'text',
-        content: `To maximize this opportunity, I accepted an offer at **GDP Labs** to hone my engineering craft at scale, while strictly dedicating my "second shift" to **Apple's RnL program**, a highly exclusive research initiative selected from the top Academy graduates.`,
+        content: `To maximize this opportunity, I accepted an offer at **GDP Labs** to hone my engineering craft at scale, while dedicating my "second shift" to **Apple's RnL program**.`,
       },
+      {
+         type: 'text',
+         content: `...and the story continues. (More details coming soon)`,
+         align: 'center'
+      }
     ],
   },
   {
@@ -112,7 +141,34 @@ const journeyData: JourneyYear[] = [
       { title: 'Completed Apple Developer Academy Program' },
       { title: 'Began Freelance Career' },
     ],
-    story: [],
+    story: [
+        {
+          type: 'text',
+          content: `2024 was a year of professional awakening. I stepped into the **Apple Developer Academy**, not just as a student, but as an aspiring professional ready to absorb everything. It wasn't just about coding; it was about product management, design thinking, and leadership.`,
+        },
+        {
+          type: 'quote',
+          text: "Talent wins games, but teamwork and intelligence win championships.",
+          author: "Michael Jordan"
+        },
+        {
+          type: 'text',
+          content: `This environment gave me the clarity I needed. I realized I didn't just want to build software; I wanted to build **solutions**. This drive led me to pick up my first freelance clients, delivering real-world value while still studying.`,
+        },
+        {
+          type: 'stats',
+          items: [
+             { label: 'Role', value: 'Intern' },
+             { label: 'Focus', value: 'iOS & Product' },
+             { label: 'Projects', value: '5+' },
+          ]
+        },
+        {
+          type: 'text',
+          content: `...and the story continues. (More details coming soon)`,
+          align: 'center'
+        }
+    ],
   },
   {
     year: '2023',

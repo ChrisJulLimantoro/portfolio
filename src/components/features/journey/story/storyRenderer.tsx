@@ -110,6 +110,29 @@ function BlockItem({ block, index }: { block: StoryBlock; index: number }) {
         </motion.blockquote>
       );
 
+    case 'list':
+      return (
+        <motion.ul
+          initial={initial}
+          whileInView={whileInView}
+          transition={transition}
+          viewport={{ once: true }}
+          className="space-y-4 my-8 bg-slate-900/40 p-6 rounded-2xl border border-slate-800"
+        >
+          {block.items.map((item, i) => (
+            <li key={i} className="flex items-start gap-3 text-lg text-slate-300">
+               <span className="text-cyan-400 mt-1">
+                 {/* Simple check icon if no icon provided */}
+                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+               </span>
+               <span dangerouslySetInnerHTML={{ 
+                  __html: item.text.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>') 
+               }} />
+            </li>
+          ))}
+        </motion.ul>
+      );
+
     default:
       return null;
   }
