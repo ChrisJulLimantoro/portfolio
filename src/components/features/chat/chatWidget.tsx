@@ -6,6 +6,7 @@ import { MessageSquare, X, Send, Sparkles, User, Bot, ChevronDown, Maximize2, Ex
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 type Message = {
   id: string;
@@ -14,6 +15,7 @@ type Message = {
 };
 
 export function ChatWidget() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
@@ -141,6 +143,11 @@ export function ChatWidget() {
     }
   };
 
+  // Don't render the widget on the /chat page
+  if (pathname === '/chat') {
+    return null;
+  }
+
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end pointer-events-none">
       <AnimatePresence>
@@ -163,12 +170,30 @@ export function ChatWidget() {
                   <p className="text-xs text-slate-400">Ask everything about Julius!</p>
                 </div>
               </div>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="text-slate-400 hover:text-white transition-colors"
-              >
-                <ChevronDown size={20} />
-              </button>
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/chat"
+                  className="text-slate-400 hover:text-cyan-400 transition-colors"
+                  title="Open full chat"
+                >
+                  <Maximize2 size={16} />
+                </Link>
+                {messages.length > 0 && (
+                  <button
+                    onClick={clearHistory}
+                    className="text-slate-400 hover:text-red-400 transition-colors"
+                    title="Clear chat history"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                )}
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="text-slate-400 hover:text-white transition-colors"
+                >
+                  <ChevronDown size={20} />
+                </button>
+              </div>
             </div>
 
             {/* Messages Area */}
@@ -221,7 +246,14 @@ export function ChatWidget() {
                   >
                     {m.role === 'assistant' ? (
                       <>
-                        <div className={`prose prose-invert prose-sm max-w-none prose-p:leading-relaxed prose-p:my-3 prose-ul:my-3 prose-li:my-1.5 ${expandedMessageId === m.id ? '' : 'line-clamp-6'}`}>
+                        <div className={`prose prose-invert prose-sm max-w-none 
+                          prose-p:leading-relaxed prose-p:my-2 
+                          prose-ul:my-3 prose-ul:list-disc prose-ul:pl-5
+                          prose-ol:my-3 prose-ol:list-decimal prose-ol:pl-5
+                          prose-li:my-1 prose-li:text-slate-200
+                          prose-strong:text-cyan-300 prose-strong:font-semibold
+                          prose-headings:text-slate-100 prose-headings:font-bold
+                          ${expandedMessageId === m.id ? '' : 'line-clamp-6'}`}>
                           <ReactMarkdown
                             remarkPlugins={[remarkGfm]}
                             components={{
