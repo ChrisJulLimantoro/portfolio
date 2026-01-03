@@ -2,11 +2,14 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, X, Send, Sparkles, User, Bot, ChevronDown, Maximize2, ExternalLink, Trash2 } from 'lucide-react';
+import { MessageSquare, X, Send, Sparkles, User, Bot, ChevronDown, Maximize2, ExternalLink, Trash2, AlertTriangle, Clock } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { checkClientRateLimit, incrementQueryCount, syncWithServer, getTimeUntilMidnight, getCurrentTimeUTC7 } from '@/lib/utils/client-rate-limiter';
+import { loadChatHistory, saveChatHistory, clearChatHistory as clearStoredHistory, trimToLimit } from '@/lib/utils/chat-history';
+import { RATE_LIMIT_CONFIG } from '@/lib/config/rate-limit-config';
 
 type Message = {
   id: string;
@@ -22,37 +25,72 @@ export function ChatWidget() {
   const [isLoading, setIsLoading] = useState(false);
   const [expandedMessageId, setExpandedMessageId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  // Rate limiting state
+  const [remainingQueries, setRemainingQueries] = useState<number>(RATE_LIMIT_CONFIG.DAILY_QUERY_LIMIT);
+  const [isRateLimited, setIsRateLimited] = useState(false);
+  const [rateLimitError, setRateLimitError] = useState<string | null>(null);
+  const [timeUntilReset, setTimeUntilReset] = useState('');
+  const [currentTime, setCurrentTime] = useState('');
 
-  // Load chat history from localStorage on mount
+  // Load chat history and check rate limit on mount
   useEffect(() => {
-    const savedMessages = localStorage.getItem('chatHistory');
-    const savedTimestamp = localStorage.getItem('chatHistoryTimestamp');
+    const messages = loadChatHistory();
+    setMessages(messages);
     
-    if (savedMessages && savedTimestamp) {
+    // Check client-side rate limit first
+    const rateLimit = checkClientRateLimit();
+    setRemainingQueries(rateLimit.remaining);
+    setIsRateLimited(!rateLimit.allowed);
+
+    // Sync with server to get actual count from Redis
+    const fetchServerRateLimit = async () => {
       try {
-        const timestamp = parseInt(savedTimestamp, 10);
-        const now = Date.now();
-        const twentyFourHours = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-        
-        // Check if chat history is older than 24 hours
-        if (now - timestamp < twentyFourHours) {
-          setMessages(JSON.parse(savedMessages));
-        } else {
-          // Clear expired chat history
-          localStorage.removeItem('chatHistory');
-          localStorage.removeItem('chatHistoryTimestamp');
+        // Use dedicated HEAD endpoint to check rate limit without incrementing
+        const response = await fetch('/api/chat/head');
+
+        // Read rate limit headers
+        const limit = response.headers.get('X-RateLimit-Limit');
+        const remaining = response.headers.get('X-RateLimit-Remaining');
+
+        if (limit && remaining) {
+          const remainingNum = parseInt(remaining, 10);
+          setRemainingQueries(remainingNum);
+          setIsRateLimited(remainingNum <= 0);
+
+          // Update localStorage to match server using imported syncWithServer
+          syncWithServer(response.headers);
         }
       } catch (error) {
-        console.error('Failed to load chat history:', error);
+        console.error('Failed to sync with server:', error);
+        // Keep client-side values if sync fails
       }
-    }
+    };
+
+    fetchServerRateLimit();
   }, []);
 
-  // Save chat history to localStorage whenever messages change
+  // Update time displays every minute
+  useEffect(() => {
+    const updateTime = () => {
+      setTimeUntilReset(getTimeUntilMidnight());
+      setCurrentTime(getCurrentTimeUTC7());
+    };
+    
+    updateTime();
+    const interval = setInterval(updateTime, 60000); // Update every minute
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  // Save chat history whenever messages change (with 50 message limit)
   useEffect(() => {
     if (messages.length > 0) {
-      localStorage.setItem('chatHistory', JSON.stringify(messages));
-      localStorage.setItem('chatHistoryTimestamp', Date.now().toString());
+      const trimmed = trimToLimit(messages);
+      saveChatHistory(trimmed);
+      if (trimmed.length < messages.length) {
+        setMessages(trimmed);
+      }
     }
   }, [messages]);
 
@@ -62,8 +100,7 @@ export function ChatWidget() {
 
   const clearHistory = () => {
     setMessages([]);
-    localStorage.removeItem('chatHistory');
-    localStorage.removeItem('chatHistoryTimestamp');
+    clearStoredHistory();
   };
 
   useEffect(() => {
@@ -74,6 +111,14 @@ export function ChatWidget() {
     e.preventDefault();
     if (!inputValue?.trim() || isLoading) return;
 
+    // Client-side rate limit check
+    const rateLimit = checkClientRateLimit();
+    if (!rateLimit.allowed) {
+      setIsRateLimited(true);
+      setRateLimitError(`You've reached your daily limit of ${RATE_LIMIT_CONFIG.DAILY_QUERY_LIMIT} questions. Resets at midnight UTC+7.`);
+      return;
+    }
+
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
@@ -83,6 +128,7 @@ export function ChatWidget() {
     setMessages((prev) => [...prev, userMessage]);
     setInputValue('');
     setIsLoading(true);
+    setRateLimitError(null);
 
     try {
       const response = await fetch('/api/chat', {
@@ -98,9 +144,43 @@ export function ChatWidget() {
         }),
       });
 
+      // Handle rate limit error (429)
+      if (response.status === 429) {
+        const data = await response.json();
+        setIsRateLimited(true);
+        setRateLimitError(data.message || 'Rate limit exceeded');
+        
+        // Sync with server
+        syncWithServer(response.headers);
+        const updatedLimit = checkClientRateLimit();
+        setRemainingQueries(updatedLimit.remaining);
+        
+        // Remove user message since it wasn't processed
+        setMessages((prev) => prev.filter((m) => m.id !== userMessage.id));
+        return;
+      }
+
+      // Handle storage full error (503)
+      if (response.status === 503) {
+        const data = await response.json();
+        setRateLimitError(data.message || 'Service temporarily unavailable');
+        
+        // Remove user message
+        setMessages((prev) => prev.filter((m) => m.id !== userMessage.id));
+        return;
+      }
+
       if (!response.ok) {
         throw new Error('Failed to get response');
       }
+
+      // Sync rate limit with server headers
+      syncWithServer(response.headers);
+      const updatedLimit = checkClientRateLimit();
+      setRemainingQueries(updatedLimit.remaining);
+      
+      // Increment query count
+      incrementQueryCount();
 
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
@@ -160,44 +240,88 @@ export function ChatWidget() {
             className="pointer-events-auto mb-4 w-[90vw] md:w-[400px] h-[500px] max-h-[80vh] bg-slate-900/90 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-2xl flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 bg-gradient-to-r from-slate-800/80 to-slate-900/80 border-b border-slate-700/50">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400">
-                  <Sparkles size={16} />
+            <div className="flex flex-col gap-2 p-4 bg-gradient-to-r from-slate-800/80 to-slate-900/80 border-b border-slate-700/50">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400">
+                    <Sparkles size={16} />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-100">Ask MeBot</h3>
+                    <p className="text-xs text-slate-400">Ask everything about Julius!</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-sm font-bold text-slate-100">Ask MeBot</h3>
-                  <p className="text-xs text-slate-400">Ask everything about Julius!</p>
+                <div className="flex items-center gap-2">
+                  <Link
+                    href="/chat"
+                    className="text-slate-400 hover:text-cyan-400 transition-colors"
+                    title="Open full chat"
+                  >
+                    <Maximize2 size={16} />
+                  </Link>
+                  {messages.length > 0 && (
+                    <button
+                      onClick={clearHistory}
+                      className="text-slate-400 hover:text-red-400 transition-colors"
+                      title="Clear chat history"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="text-slate-400 hover:text-white transition-colors"
+                  >
+                    <ChevronDown size={20} />
+                  </button>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Link
-                  href="/chat"
-                  className="text-slate-400 hover:text-cyan-400 transition-colors"
-                  title="Open full chat"
-                >
-                  <Maximize2 size={16} />
-                </Link>
-                {messages.length > 0 && (
-                  <button
-                    onClick={clearHistory}
-                    className="text-slate-400 hover:text-red-400 transition-colors"
-                    title="Clear chat history"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                )}
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="text-slate-400 hover:text-white transition-colors"
-                >
-                  <ChevronDown size={20} />
-                </button>
+              
+              {/* Rate Limit Info */}
+              <div className="flex items-center justify-between text-xs">
+                <div className={`flex items-center gap-1.5 ${remainingQueries < RATE_LIMIT_CONFIG.WARNING_THRESHOLD ? 'text-amber-400' : 'text-slate-400'}`}>
+                  <MessageSquare size={12} />
+                  <span className="font-medium">
+                    {remainingQueries}/{RATE_LIMIT_CONFIG.DAILY_QUERY_LIMIT} queries left
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 text-slate-500">
+                  <div className="flex items-center gap-1">
+                    <Clock size={12} />
+                    <span>{currentTime} UTC+7</span>
+                  </div>
+                  <span className="text-slate-600">•</span>
+                  <span>Resets in {timeUntilReset}</span>
+                </div>
               </div>
             </div>
 
             {/* Messages Area */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+              {/* Warning Banner - Low Queries */}
+              {remainingQueries > 0 && remainingQueries < RATE_LIMIT_CONFIG.WARNING_THRESHOLD && (
+                <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-3 flex items-start gap-2">
+                  <AlertTriangle size={16} className="text-amber-400 mt-0.5 shrink-0" />
+                  <div className="text-xs text-amber-200">
+                    <p className="font-medium">Only {remainingQueries} queries remaining today</p>
+                    <p className="text-amber-300/70 mt-0.5">Resets at midnight UTC+7 ({timeUntilReset})</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Error Banner - Rate Limit or Storage */}
+              {rateLimitError && (
+                <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3 flex items-start gap-2">
+                  <AlertTriangle size={16} className="text-red-400 mt-0.5 shrink-0" />
+                  <div className="text-xs text-red-200">
+                    <p className="font-medium">{rateLimitError}</p>
+                    {isRateLimited && (
+                      <p className="text-red-300/70 mt-0.5">Try again after midnight UTC+7</p>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {messages.length === 0 && (
                 <div className="text-center py-10 space-y-4">
                   <div className="w-16 h-16 bg-slate-800/50 rounded-full mx-auto flex items-center justify-center text-slate-600">
@@ -214,7 +338,8 @@ export function ChatWidget() {
                       <button
                         key={q}
                         onClick={() => setInputValue(q)}
-                        className="text-xs px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-cyan-500/50 text-slate-400 hover:text-cyan-400 transition-colors"
+                        disabled={isRateLimited}
+                        className="text-xs px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-cyan-500/50 text-slate-400 hover:text-cyan-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {q}
                       </button>
@@ -330,12 +455,13 @@ export function ChatWidget() {
                 <input
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="Type your question..."
-                  className="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-full pl-5 pr-12 py-3 text-sm focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 transition-all placeholder:text-slate-600"
+                  placeholder={isRateLimited ? "Rate limit reached - resets at midnight UTC+7" : "Type your question..."}
+                  disabled={isRateLimited}
+                  className="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-full pl-5 pr-12 py-3 text-sm focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 transition-all placeholder:text-slate-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <button
                   type="submit"
-                  disabled={isLoading || !inputValue?.trim()}
+                  disabled={isLoading || !inputValue?.trim() || isRateLimited}
                   className="absolute right-2 p-2 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full text-white shadow-lg disabled:opacity-50 disabled:shadow-none hover:shadow-cyan-500/20 transition-all transform hover:scale-105 active:scale-95"
                 >
                   <Send size={16} />
