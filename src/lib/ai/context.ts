@@ -75,24 +75,43 @@ export function getFilteredContext(userQuestion: string): string {
   
   const questionLower = userQuestion.toLowerCase();
   
-  // Extract keywords from the question
-  const keywords = questionLower.split(/\s+/).filter(word => word.length > 3);
+  // Extract keywords from the question (lowered threshold from 3 to 2)
+  const keywords = questionLower
+    .split(/\s+/)
+    .filter(word => word.length > 2) // Changed from 3 to 2 for better matching
+    .filter(word => !['the', 'what', 'how', 'why', 'when', 'where', 'who', 'can', 'you', 'your', 'tell', 'about', 'are', 'was', 'were'].includes(word));
   
-  // Helper function to calculate relevance score
+  console.log('Extracted keywords:', keywords);
+  
+  // Helper function to calculate relevance score with partial matching
   const calculateRelevance = (text: string): number => {
     const textLower = text.toLowerCase();
-    return keywords.reduce((score, keyword) => {
-      return score + (textLower.includes(keyword) ? 1 : 0);
-    }, 0);
+    let score = 0;
+    
+    keywords.forEach(keyword => {
+      // Exact match (higher score)
+      if (textLower.includes(keyword)) {
+        score += 2;
+      }
+      // Partial match for longer keywords
+      else if (keyword.length > 4) {
+        const partial = keyword.substring(0, Math.floor(keyword.length * 0.7));
+        if (textLower.includes(partial)) {
+          score += 1;
+        }
+      }
+    });
+    
+    return score;
   };
   
-  // Filter relevant projects
+  // Filter relevant projects (lowered threshold)
   const relevantProjects = projects
     .map(p => ({
       project: p,
-      score: calculateRelevance(`${p.title} ${p.description} ${p.tags?.join(' ')} ${p.languages.join(' ')} ${p.frameworks.join(' ')}`)
+      score: calculateRelevance(`${p.title} ${p.description} ${p.tags?.join(' ')} ${p.languages.join(' ')} ${p.frameworks.join(' ')} ${p.highlights.join(' ')}`)
     }))
-    .filter(({ score }) => score > 0)
+    .filter(({ score }) => score > 0) // Keep anything with any match
     .sort((a, b) => b.score - a.score)
     .slice(0, 3) // Top 3 most relevant
     .map(({ project: p }) => 
@@ -101,6 +120,8 @@ export function getFilteredContext(userQuestion: string): string {
        Tech Stack: ${p.languages.join(', ')}, ${p.frameworks.join(', ')}
        Key Highlights: ${p.highlights.join('; ')}`
     );
+  
+  console.log('Relevant projects found:', relevantProjects.length);
   
   // Filter relevant journey years
   const relevantJourney = journey
