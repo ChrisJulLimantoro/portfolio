@@ -1,6 +1,8 @@
 import { MyJourneySection } from '@/components/features/home/myjourneySection';
 import { HeroSection } from '@/components/features/home/heroSection';
 import { ProjectHighlight } from '@/components/features/home/projectHighlight';
+import { BlogHighlight } from '@/components/features/home/blogHighlight';
+import { getBlogPosts } from '@/lib/data';
 
 /**
  * Homepage - Server Component
@@ -9,6 +11,10 @@ import { ProjectHighlight } from '@/components/features/home/projectHighlight';
  * are Client Components for animations, but the page itself is not.
  */
 export default function HomePage() {
+  const blogPosts = getBlogPosts();
+  const featuredPost = blogPosts.find(post => post.featured) || blogPosts[0];
+  const latestPosts = blogPosts.filter(post => !post.featured).slice(0, 3);
+
   return (
     <>
       {/* HeroSection is a Client Component for its <Link> buttons and animations */}
@@ -16,6 +22,9 @@ export default function HomePage() {
 
       {/* AboutSection is a Client Component for its `motion` animations */}
       <MyJourneySection />
+
+      {/* Blog Highlight - Newspaper-style layout */}
+      <BlogHighlight featuredPost={featuredPost} latestPosts={latestPosts} />
 
       {/* ProjectHighlight can be a Server Component as it just renders static info */}
       <ProjectHighlight />
