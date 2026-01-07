@@ -6,7 +6,7 @@
 
 export const RATE_LIMIT_CONFIG = {
   // Rate limiting
-  DAILY_QUERY_LIMIT: 30, // Maximum queries per day per IP
+  DAILY_QUERY_LIMIT: 10, // Maximum queries per day per IP
   WARNING_THRESHOLD: 5, // Show warning when < 5 queries left
   
   // Chat history
