@@ -2,7 +2,6 @@
 import { JourneyYear } from '@/lib/data';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Image from 'next/image';
-import { ArrowUpRight } from 'lucide-react';
 import { useRef } from 'react';
 import Link from 'next/link';
 
@@ -12,77 +11,63 @@ export function SpotlightYear({ data }: { data: JourneyYear }) {
     target: containerRef,
     offset: ['start end', 'end start'],
   });
-
   const y = useTransform(scrollYProgress, [0, 1], [0, 100]);
 
   return (
-    <div ref={containerRef} className="py-32 relative text-center">
-      <motion.div 
-        style={{ y }} 
-        className="absolute inset-0 opacity-20 pointer-events-none"
-      >
-         <Image 
-            src={data.photos[0].src} 
-            alt="Background" 
-            fill 
-            className="object-cover blur-3xl scale-110" 
-         />
+    <div ref={containerRef} className="relative py-28 text-center">
+      <motion.div style={{ y }} className="pointer-events-none absolute inset-0 opacity-20">
+        <Image src={data.photos[0].src} alt="" fill className="scale-110 object-cover blur-3xl" />
       </motion.div>
 
-      <div className="relative z-10 max-w-4xl mx-auto px-6">
-        <motion.span 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="inline-block py-1 px-3 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-sm font-bold mb-6"
+      <div className="relative z-10 mx-auto max-w-4xl px-2">
+        <motion.span
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="kicker inline-block rounded-full border px-4 py-1.5"
+          style={{ borderColor: 'var(--line)', color: 'var(--cyan)' }}
         >
-            {data.year} Highlight
+          {data.year} — spotlight
         </motion.span>
-        
-        <motion.h3 
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            className="text-5xl md:text-8xl font-display font-bold text-white mb-8 leading-tight"
+
+        <motion.h3
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          className="font-editorial mt-6 text-5xl leading-[0.95] text-[#ECECF2] md:text-8xl"
         >
           {data.title}
         </motion.h3>
-        
-        <p className="text-xl md:text-2xl text-slate-300 mb-16 max-w-2xl mx-auto leading-relaxed">
-            {data.description}
+
+        <p className="mx-auto mt-8 max-w-2xl text-xl leading-relaxed text-[#a9a9b6] md:text-2xl">
+          {data.description}
         </p>
 
-        {/* Milestones as Big Cards */}
-        <div className="grid md:grid-cols-2 gap-6 text-left">
-            {data.milestones.map((m, i) => (
-                <motion.div 
-                    key={i}
-                    whileHover={{ y: -5 }}
-                    className="bg-slate-900/80 backdrop-blur-md p-8 rounded-2xl border border-slate-800 hover:border-cyan-500/50 transition-colors group"
-                >
-                    <h4 className="text-2xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">{m.title}</h4>
-                    <p className="text-slate-400">{m.description}</p>
-                </motion.div>
-            ))}
+        <div className="mt-14 grid gap-6 text-left md:grid-cols-2">
+          {data.milestones.map((m, i) => (
+            <motion.div
+              key={i}
+              whileHover={{ y: -5 }}
+              className="group rounded-2xl border p-8 transition-colors"
+              style={{ borderColor: 'var(--line)', background: 'var(--ink-2)' }}
+            >
+              <h4 className="font-editorial text-2xl text-[#ECECF2] transition-colors group-hover:text-[color:var(--cyan)]" style={{ ['--cyan' as string]: 'var(--cyan)' }}>
+                {m.title}
+              </h4>
+              <p className="mt-2 text-sm leading-relaxed text-[#a9a9b6]">{m.description}</p>
+            </motion.div>
+          ))}
         </div>
 
-        {/* Achievements Buttons */}
         <div className="mt-12 flex flex-wrap justify-center gap-4">
-            {/* Actions */}
-            <div className="flex flex-wrap gap-4 pt-4">
-               <Link
-                href={`/my-journey/${data.slug}`}
-                className="px-6 py-3 rounded-full bg-cyan-500 text-slate-900 font-semibold hover:bg-cyan-400 transition-colors"
-               >
-                View Full Story
-               </Link>
-              {data.achievements[0]?.link && (
-                <a 
-                  href={data.achievements[0].link}
-                  className="px-6 py-3 rounded-full border border-slate-700 text-slate-300 hover:text-white hover:border-slate-500 transition-colors"
-                >
-                  {data.achievements[0].linkText || 'View Achievement'}
-                </a>
-              )}
-            </div>
+          <Link href={`/my-journey/${data.slug}`} className="rounded-full px-6 py-3 font-sans text-sm font-semibold text-[#0b0b12] transition-transform hover:-translate-y-0.5" style={{ background: 'var(--cyan)' }}>
+            Read the full story
+          </Link>
+          {data.achievements[0]?.link && (
+            <a href={data.achievements[0].link} className="rounded-full border px-6 py-3 font-sans text-sm font-semibold text-[#ECECF2] transition-colors hover:border-[color:var(--cyan)]" style={{ borderColor: 'var(--line)' }}>
+              {data.achievements[0].linkText || 'View achievement'}
+            </a>
+          )}
         </div>
       </div>
     </div>

@@ -1,11 +1,9 @@
-'use client'; // This component MUST be a client component for filters
+'use client';
 
 import { useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
-import { Search, Filter } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { ProjectCard } from './projectCard';
+import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
+import { Search, ArrowUpRight, LayoutGrid, List } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -13,186 +11,241 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Project } from '@/lib/data'; // Import the type
+import { Project } from '@/lib/data';
+import { ProjectCard } from './projectCard';
+import { accentFor, variantLabel } from './projectAccent';
 
-type ProjectListProps = {
-  allProjects: Project[]; // Receive projects as a prop
-};
+type ProjectListProps = { allProjects: Project[] };
 
 export function ProjectList({ allProjects }: ProjectListProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [languageFilter, setLanguageFilter] = useState<string>('all');
-  const [frameworkFilter, setFrameworkFilter] = useState<string>('all');
-  const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [languageFilter, setLanguageFilter] = useState('all');
+  const [frameworkFilter, setFrameworkFilter] = useState('all');
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [view, setView] = useState<'index' | 'grid'>('index');
+  const [activeSlug, setActiveSlug] = useState<string | null>(null);
 
   const filteredProjects = useMemo(() => {
     return allProjects.filter((project) => {
+      const q = searchQuery.toLowerCase();
       const matchesSearch =
-        searchQuery === '' ||
-        project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        project.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        project.tags.some((tag) =>
-          tag.toLowerCase().includes(searchQuery.toLowerCase())
-        ) ||
-        project.languages.some((l) =>
-          l.toLowerCase().includes(searchQuery.toLowerCase())
-        ) ||
-        project.frameworks.some((f) =>
-          f.toLowerCase().includes(searchQuery.toLowerCase())
-        ) ||
-        project.highlights.some((h) =>
-          h.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-
+        q === '' ||
+        project.title.toLowerCase().includes(q) ||
+        project.description.toLowerCase().includes(q) ||
+        project.tags.some((t) => t.toLowerCase().includes(q)) ||
+        project.languages.some((l) => l.toLowerCase().includes(q)) ||
+        project.frameworks.some((f) => f.toLowerCase().includes(q)) ||
+        project.highlights.some((h) => h.toLowerCase().includes(q));
       const matchesLanguage =
         languageFilter === 'all' || project.languages.includes(languageFilter);
       const matchesFramework =
         frameworkFilter === 'all' || project.frameworks.includes(frameworkFilter);
       const matchesCategory =
         categoryFilter === 'all' || project.category === categoryFilter;
-
-      return (
-        matchesSearch && matchesLanguage && matchesFramework && matchesCategory
-      );
+      return matchesSearch && matchesLanguage && matchesFramework && matchesCategory;
     });
-  }, [
-    searchQuery,
-    languageFilter,
-    frameworkFilter,
-    categoryFilter,
-    allProjects,
-  ]);
+  }, [searchQuery, languageFilter, frameworkFilter, categoryFilter, allProjects]);
 
-  // Derive filters from the *full* list of projects
   const languages = Array.from(new Set(allProjects.flatMap((p) => p.languages)));
   const frameworks = Array.from(new Set(allProjects.flatMap((p) => p.frameworks)));
   const categories = Array.from(new Set(allProjects.map((p) => p.category)));
 
+  const preview =
+    filteredProjects.find((p) => p.slug === activeSlug) ?? filteredProjects[0];
+
+  const triggerCls =
+    'w-40 bg-[var(--ink-2)] border-[color:var(--line)] text-[#ECECF2]';
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
-      <h1 className="font-display font-bold text-6xl md:text-8xl text-white mb-10">All Projects</h1>
-      <p className="text-slate-400 mb-12 max-w-3xl text-lg">
-        Browse through all my projects and repositories. Use the search and
-        filters to find specific technologies or topics.
-      </p>
+    <div>
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="mb-10"
+      >
+        <span className="kicker" style={{ color: 'var(--fuchsia)' }}>
+          The Index — every build
+        </span>
+        <h1 className="font-editorial mt-3 text-6xl text-[#ECECF2] sm:text-8xl">
+          All work
+        </h1>
+        <p className="mt-4 max-w-2xl text-lg text-[#a9a9b6]">
+          The full catalogue — agents, automation, apps and experiments. Hover to
+          preview, filter to dig, click to open.
+        </p>
+      </motion.div>
 
-      {/* Search Bar */}
-      <div className="mb-8">
-        <div className="relative">
-          <Search
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-            size={20}
-          />
-          <Input
-            type="text"
-            placeholder="Search by repository name, topic, or AI summary..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-12 h-14 bg-slate-800/50 backdrop-blur-sm border-slate-700/50 text-white placeholder:text-slate-500 focus:border-cyan-500/50"
-          />
-        </div>
+      {/* Search */}
+      <div className="relative mb-6">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8a8a99]" size={20} />
+        <input
+          type="text"
+          placeholder="Search by name, tech, or topic…"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="h-14 w-full rounded-xl border bg-[var(--ink-2)] pl-12 pr-4 text-[#ECECF2] placeholder:text-[#6b6b78] focus:outline-none focus:ring-2 focus:ring-[#ff3d81]"
+          style={{ borderColor: 'var(--line)' }}
+        />
       </div>
 
-      {/* Filters */}
-      <div className="mb-12 flex flex-wrap gap-4">
-        <div className="flex items-center gap-2">
-          <Filter size={18} className="text-slate-400" />
-          <span className="text-slate-400">Filters:</span>
-        </div>
-
+      {/* Filters + view toggle */}
+      <div className="mb-8 flex flex-wrap items-center gap-4 border-b pb-6" style={{ borderColor: 'var(--line)' }}>
         <Select value={languageFilter} onValueChange={setLanguageFilter}>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Language" />
-          </SelectTrigger>
+          <SelectTrigger className={triggerCls}><SelectValue placeholder="Language" /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Languages</SelectItem>
-            {languages.map((lang) => (
-              <SelectItem key={lang} value={lang}>
-                {lang}
-              </SelectItem>
-            ))}
+            <SelectItem value="all">All languages</SelectItem>
+            {languages.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}
           </SelectContent>
         </Select>
-
         <Select value={frameworkFilter} onValueChange={setFrameworkFilter}>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Framework" />
-          </SelectTrigger>
+          <SelectTrigger className={triggerCls}><SelectValue placeholder="Framework" /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Frameworks</SelectItem>
-            {frameworks.map((fw) => (
-              <SelectItem key={fw} value={fw}>
-                {fw}
-              </SelectItem>
-            ))}
+            <SelectItem value="all">All frameworks</SelectItem>
+            {frameworks.map((f) => <SelectItem key={f} value={f}>{f}</SelectItem>)}
           </SelectContent>
         </Select>
-
         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Category" />
-          </SelectTrigger>
+          <SelectTrigger className={triggerCls}><SelectValue placeholder="Category" /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
-            {categories.map((cat) => (
-              <SelectItem key={cat} value={cat}>
-                {cat}
-              </SelectItem>
-            ))}
+            <SelectItem value="all">All categories</SelectItem>
+            {categories.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
           </SelectContent>
         </Select>
 
-        {(languageFilter !== 'all' ||
-          frameworkFilter !== 'all' ||
-          categoryFilter !== 'all') && (
-          <button
-            onClick={() => {
-              setLanguageFilter('all');
-              setFrameworkFilter('all');
-              setCategoryFilter('all');
-            }}
-            className="text-cyan-400 hover:underline"
-          >
-            Clear filters
-          </button>
-        )}
+        <span className="kicker ml-auto hidden sm:inline" style={{ color: 'var(--hush)' }}>
+          {filteredProjects.length} {filteredProjects.length === 1 ? 'project' : 'projects'}
+        </span>
+
+        {/* View toggle (desktop only — mobile is always cards) */}
+        <div className="hidden items-center gap-1 rounded-full border p-1 lg:flex" style={{ borderColor: 'var(--line)' }}>
+          {(['index', 'grid'] as const).map((v) => (
+            <button
+              key={v}
+              onClick={() => setView(v)}
+              className="flex items-center gap-1.5 rounded-full px-3 py-1.5 font-sans text-xs font-semibold transition-colors"
+              style={{
+                background: view === v ? 'var(--fuchsia)' : 'transparent',
+                color: view === v ? '#0b0b12' : 'var(--hush)',
+              }}
+            >
+              {v === 'index' ? <List size={14} /> : <LayoutGrid size={14} />}
+              {v === 'index' ? 'Index' : 'Grid'}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Results Count */}
-      <div className="mb-6">
-        <Badge
-          variant="secondary"
-          className="bg-slate-800/50 text-slate-300 border-slate-700/50"
-        >
-          {filteredProjects.length}{' '}
-          {filteredProjects.length === 1 ? 'project' : 'projects'} found
-        </Badge>
-      </div>
+      {/* INDEX (master–detail) — desktop, when selected */}
+      {view === 'index' && filteredProjects.length > 0 && (
+        <div className="hidden gap-12 lg:grid lg:grid-cols-[1.1fr_1fr]">
+          {/* Master list */}
+          <ol>
+            {filteredProjects.map((project) => {
+              const accent = accentFor(project);
+              const isActive = preview?.slug === project.slug;
+              return (
+                <li key={project.slug}>
+                  <Link
+                    href={`/project/${project.slug}`}
+                    onMouseEnter={() => setActiveSlug(project.slug)}
+                    onFocus={() => setActiveSlug(project.slug)}
+                    className="group grid grid-cols-[1fr_auto] items-center gap-4 border-t py-6 transition-colors focus-visible:outline-none"
+                    style={{ borderColor: 'var(--line)' }}
+                  >
+                    <div className="min-w-0">
+                      <span className="kicker" style={{ color: accent }}>
+                        {variantLabel(project)} · {project.category}
+                      </span>
+                      <h3
+                        className="font-editorial mt-1 text-3xl leading-tight transition-colors duration-200 sm:text-4xl"
+                        style={{ color: isActive ? accent : '#ECECF2' }}
+                      >
+                        {project.title}
+                      </h3>
+                    </div>
+                    <ArrowUpRight
+                      size={22}
+                      className="shrink-0 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                      style={{ color: isActive ? accent : 'var(--hush)' }}
+                    />
+                  </Link>
+                </li>
+              );
+            })}
+          </ol>
 
-      {/* Project Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredProjects.map((project, index) => (
-          <ProjectCard 
-            key={project.title} 
-            {...project} 
-            image={project.images[0].src} 
-            delay={index * 0.05} 
-          />
+          {/* Detail preview */}
+          <div>
+            <div className="sticky top-24">
+              <AnimatePresence mode="wait">
+                {preview && (
+                  <motion.div
+                    key={preview.slug}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Preview project={preview} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* GRID — always on mobile; on desktop when toggled */}
+      <div className={view === 'grid' ? 'grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3' : 'grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:hidden'}>
+        {filteredProjects.map((project, i) => (
+          <ProjectCard key={project.slug} project={project} index={i} />
         ))}
       </div>
 
       {filteredProjects.length === 0 && (
-        <div className="text-center py-16">
-          <p className="text-slate-500">
-            No projects found matching your criteria. Try adjusting your
-            filters.
-          </p>
+        <div className="border-t py-20 text-center" style={{ borderColor: 'var(--line)' }}>
+          <p className="font-editorial text-3xl text-[#ECECF2]">Nothing matches — yet.</p>
+          <button
+            onClick={() => {
+              setSearchQuery('');
+              setLanguageFilter('all');
+              setFrameworkFilter('all');
+              setCategoryFilter('all');
+            }}
+            className="mt-4 font-sans text-sm font-semibold text-[#ff3d81]"
+          >
+            Clear filters
+          </button>
         </div>
       )}
-    </motion.div>
+    </div>
+  );
+}
+
+function Preview({ project }: { project: Project }) {
+  const accent = accentFor(project);
+  const cover = project.images[0]?.src;
+  return (
+    <Link href={`/project/${project.slug}`} className="group block" style={{ ['--accent' as string]: accent }}>
+      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border" style={{ borderColor: 'var(--line)', background: 'var(--ink-2)' }}>
+        {cover ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={cover} alt={project.title} className="h-full w-full object-cover opacity-90 transition-transform duration-500 group-hover:scale-[1.03]" />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center" style={{ background: `radial-gradient(120% 120% at 30% 15%, ${accent}2e, transparent 62%), var(--ink-2)` }}>
+            <span className="font-editorial text-[8rem] leading-none" style={{ color: accent }}>{project.title.charAt(0)}</span>
+          </div>
+        )}
+        <span className="absolute left-4 top-4 rounded-full px-3 py-1 font-sans text-xs font-semibold text-[#0b0b12]" style={{ background: accent }}>
+          {variantLabel(project)}
+        </span>
+      </div>
+      <p className="mt-4 max-w-lg text-[#ECECF2]">{project.description}</p>
+      <span className="mt-3 inline-flex items-center gap-1 font-sans text-sm font-semibold transition-all group-hover:gap-2" style={{ color: accent }}>
+        Open project <ArrowUpRight size={16} />
+      </span>
+    </Link>
   );
 }

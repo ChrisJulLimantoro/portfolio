@@ -1,6 +1,6 @@
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
-import { Space_Grotesk, Caveat } from 'next/font/google';
+import { Space_Grotesk, Caveat, Bricolage_Grotesque } from 'next/font/google';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -11,6 +11,13 @@ const spaceGrotesk = Space_Grotesk({
 const caveat = Caveat({
   subsets: ['latin'],
   variable: '--font-display',
+  display: 'swap',
+});
+
+// Bricolage Grotesque — the editorial display face for the new masthead identity
+const bricolage = Bricolage_Grotesque({
+  subsets: ['latin'],
+  variable: '--font-bricolage',
   display: 'swap',
 });
 import { ParallaxBackground } from '@/components/layout/parallaxBackground';
@@ -33,8 +40,11 @@ export default function RootLayout({
 }>) {
   return (
     // Added lang="en" to html tag
-    <html lang="en" className={`${spaceGrotesk.variable} ${caveat.variable}`}>
-      <body className="min-h-screen bg-[#0d1117] text-white">
+    <html
+      lang="en"
+      className={`${spaceGrotesk.variable} ${caveat.variable} ${bricolage.variable}`}
+    >
+      <body className="min-h-screen bg-[#0b0b12] text-[#ECECF2]">
         <ClientOnly>
           <ParallaxBackground />
         </ClientOnly>

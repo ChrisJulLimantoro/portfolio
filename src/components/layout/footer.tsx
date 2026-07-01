@@ -1,80 +1,63 @@
 import { Github, Linkedin, Mail, FileText } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
-/**
- * Footer Component - Server Component
- * This is a simple, static component that doesn't need interactivity.
- * It's a Server Component by default.
- */
+const socials = [
+  { Icon: Github, href: 'https://github.com/ChrisJulLimantoro', label: 'GitHub' },
+  {
+    Icon: Linkedin,
+    href: 'https://linkedin.com/in/christopher-julius-limantoro',
+    label: 'LinkedIn',
+  },
+  { Icon: Mail, href: 'mailto:christopherlimantoro@gmail.com', label: 'Email' },
+  { Icon: FileText, href: '/resume.pdf', label: 'Resume' },
+];
+
 export function Footer() {
   return (
-    <footer className="relative py-12 px-6 border-t border-slate-800/50">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col items-center justify-center gap-6">
-          {/* Social Links */}
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="hover:bg-slate-800/50 hover:text-cyan-400 text-slate-400"
-              asChild
+    <footer
+      className="relative mt-12 border-t px-5 py-16 sm:px-8"
+      style={{ borderColor: 'var(--line)' }}
+    >
+      <div className="mx-auto max-w-7xl">
+        {/* Big editorial signoff */}
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <span className="kicker" style={{ color: 'var(--gold)' }}>
+              Let&apos;s build something
+            </span>
+            <a
+              href="mailto:christopherlimantoro@gmail.com"
+              className="font-editorial link-wipe mt-3 block text-5xl text-[#ECECF2] sm:text-7xl"
             >
-              <a
-                href="https://github.com/ChrisJulLimantoro"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub"
-              >
-                <Github size={20} />
-              </a>
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="hover:bg-slate-800/50 hover:text-cyan-400 text-slate-400"
-              asChild
-            >
-              <a
-                href="https://linkedin.com/in/christopher-Julius-limantoro"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-              >
-                <Linkedin size={20} />
-              </a>
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="hover:bg-slate-800/50 hover:text-cyan-400 text-slate-400"
-              asChild
-            >
-              <a href="mailto:christopherlimantoro@gmail.com" aria-label="Email">
-                <Mail size={20} />
-              </a>
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="hover:bg-slate-800/50 hover:text-cyan-400 text-slate-400"
-              asChild
-            >
-              {/* NOTE: This file needs to be in the /public folder (e.g., /public/resume.pdf) */}
-              <a
-                href="/resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Resume"
-              >
-                <FileText size={20} />
-              </a>
-            </Button>
+              Say hello →
+            </a>
           </div>
-
-          {/* Copyright */}
-          <p className="text-slate-500">
-            © 2025 Christopher Julius. All rights reserved.
+          <p className="font-display text-2xl" style={{ color: 'var(--hush)' }}>
+            thanks for scrolling this far ✋🏼
           </p>
+        </div>
+
+        {/* Bottom row */}
+        <div
+          className="mt-14 flex flex-col items-start justify-between gap-6 border-t pt-6 sm:flex-row sm:items-center"
+          style={{ borderColor: 'var(--line)' }}
+        >
+          <p className="kicker" style={{ color: 'var(--hush)' }}>
+            © 2026 Christopher Julius — Issue Nº01
+          </p>
+          <div className="flex items-center gap-5">
+            {socials.map(({ Icon, href, label }) => (
+              <a
+                key={label}
+                href={href}
+                target={href.startsWith('http') ? '_blank' : undefined}
+                rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                aria-label={label}
+                className="text-[#a9a9b6] transition-colors hover:text-[#ff3d81]"
+              >
+                <Icon size={20} />
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </footer>

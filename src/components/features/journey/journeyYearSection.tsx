@@ -18,22 +18,27 @@ export function JourneyYearSection({ data }: { data: JourneyYear }) {
   const yearOpacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 0.1, 0.1, 0]);
 
   return (
-    <section ref={sectionRef} className="relative min-h-screen py-20 px-6 border-b border-slate-900/50">
-      
+    <section
+      id={`year-${data.year}`}
+      ref={sectionRef}
+      className="relative min-h-screen scroll-mt-24 border-b px-5 py-20 sm:px-8"
+      style={{ borderColor: 'var(--line)' }}
+    >
       {/* Giant Parallax Year Background */}
-      <motion.div 
+      <motion.div
         style={{ y: yearY, opacity: yearOpacity }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-bold text-white pointer-events-none select-none z-0"
+        className="font-editorial pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2 select-none text-[22vw] text-[#ECECF2]"
       >
         {data.year}
       </motion.div>
 
       {/* Content Container (z-10 to stay above background) */}
-      <div className="relative z-10 max-w-7xl mx-auto">
-        <div className="inline-block mb-10">
-            <h2 className="text-8xl md:text-9xl font-display font-bold text-slate-800 select-none">
-                {data.year}
-            </h2>
+      <div className="relative z-10 mx-auto max-w-7xl">
+        <div className="mb-10 inline-block">
+          <span className="kicker" style={{ color: 'var(--cyan)' }}>Chapter</span>
+          <h2 className="font-editorial select-none text-8xl text-[#23232f] md:text-9xl">
+            {data.year}
+          </h2>
         </div>
 
         {/* Dynamic Layout Rendering */}

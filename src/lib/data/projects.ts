@@ -3,6 +3,16 @@ export type ProjectImage = {
   orientation: 'landscape' | 'portrait' | 'square';
 };
 
+/**
+ * Detail-page layout for a project. Mirrors the journey's per-year layouts so
+ * project detail pages are "variatif":
+ *  - gallery: screenshot bento + lightbox (default)
+ *  - live:    embeds the running site in a browser frame
+ *  - agent:   an interactive agent/pipeline panel (AI Trader)
+ *  - index:   a skills/tools index (my-skills)
+ */
+export type ProjectVariant = 'gallery' | 'live' | 'agent' | 'index';
+
 export type Project = {
   slug: string;
   title: string;
@@ -14,6 +24,7 @@ export type Project = {
   category: string;
   highlights: string[];
   images: ProjectImage[];
+  variant?: ProjectVariant;
   links?: {
     github?: string;
     live?: string;
@@ -22,6 +33,96 @@ export type Project = {
 };
 
 const allProjects: Project[] = [
+  {
+    slug: 'ai-trader',
+    title: 'AI Trader',
+    description:
+      'An agentic system for crypto perpetual futures — it screens the market, scores every setup eight ways, and knows when not to trade.',
+    longDescription:
+      'AI Trader (repo: trade-with-me) is a multi-stage agentic system for crypto perpetual futures. It streams the Binance Futures universe into a TimescaleDB store, runs each candidate through a fleet of eight narrow analyzers, and only advances a signal once a decision gate confirms a proven edge. Claude sits in the loop across tiers (Haiku, Sonnet, Opus) to assist analysis, and a learning layer scores outcomes to tune the next pass. By design it never executes a live order — every signal is paper-traded until the system earns its way past go/no-go milestones.',
+    tags: ['AI Agent', 'Automation', 'Trading', 'LLM', 'Crypto', 'Backtesting'],
+    languages: ['Python'],
+    frameworks: ['TimescaleDB', 'FastAPI', 'Docker', 'MCP'],
+    category: 'AI / Automation',
+    variant: 'agent',
+    highlights: [
+      'Eight narrow analyzers score each setup from every angle before a decision gate lets it through.',
+      'Claude is tiered by use case (Haiku / Sonnet / Opus) to balance cost against depth of analysis.',
+      'Paper-traded only — a learning layer must prove an edge before the system advances a single signal.',
+    ],
+    images: [],
+    links: {
+      github: 'https://github.com/ChrisJulLimantoro/trade-with-me',
+    },
+  },
+  {
+    slug: 'novelgit',
+    title: 'NovelGit',
+    description:
+      'A self-hosted writing studio where manuscripts live as Markdown in GitHub — and an AI layer reads them back to you.',
+    longDescription:
+      'NovelGit is a published, self-hosted studio for fiction writers. Manuscripts are stored as plain Markdown in a GitHub repository, so every chapter has version control, while the app layers a full novel-management experience on top: a TipTap editor with GitHub sync, structured per-novel lore with semantic search, and an automatically generated "Global Bible" that keeps a running summary of plot, characters, and threads. Its dual-RAG chat combines lore, manuscript excerpts, and the Global Bible to answer questions in context, with pluggable embedding providers and graceful degradation when keys are missing.',
+    tags: ['AI', 'RAG', 'Writing', 'Automation', 'Embeddings'],
+    languages: ['TypeScript'],
+    frameworks: ['Next.js', 'React', 'TipTap', 'Groq', 'Gemini'],
+    category: 'AI / Writing',
+    variant: 'live',
+    highlights: [
+      'Dual-RAG chat blends lore, manuscript excerpts, and an auto-generated Global Bible for context-aware answers.',
+      'Automated chapter distillation keeps the story summary current as you write.',
+      'Manuscripts stay as Markdown in GitHub — full version control, with the app layered on top.',
+    ],
+    images: [],
+    links: {
+      live: 'https://novelgit.vercel.app',
+      github: 'https://github.com/ChrisJulLimantoro/novelgit',
+    },
+  },
+  {
+    slug: 'chinese-learner',
+    title: 'Chinese Learner',
+    description:
+      'A spaced-repetition app for Mandarin where an AI writes every lesson card and grades my typed answers by meaning.',
+    longDescription:
+      'Chinese Learner is the spaced-repetition app I built to learn Mandarin HSK vocabulary. Instead of multiple choice, it asks for free-text answers and grades them semantically with an LLM — accepting synonyms and giving real feedback. The first time you meet a word, an LLM generates its lesson card: meanings, example sentences, character breakdowns, and mnemonics. A Leitner five-box system resurfaces words at optimal intervals across HSK 1–6, and progress syncs across devices. It ships as a full Next.js + Supabase web app, with a local-only Docker build on a separate branch.',
+    tags: ['AI', 'SRS', 'Language', 'Education', 'Automation'],
+    languages: ['TypeScript'],
+    frameworks: ['Next.js', 'Supabase'],
+    category: 'AI / Education',
+    variant: 'live',
+    highlights: [
+      'LLM-generated lesson cards — meanings, example sentences, character breakdowns, and mnemonics.',
+      'AI grades free-text answers by meaning, accepting synonyms instead of exact matches.',
+      'A Leitner five-box system schedules every word along the forgetting curve across HSK 1–6.',
+    ],
+    images: [],
+    links: {
+      live: 'https://chinese-learner-blue.vercel.app',
+      github: 'https://github.com/ChrisJulLimantoro/chinese-learner',
+    },
+  },
+  {
+    slug: 'my-skills',
+    title: 'my-skills',
+    description:
+      'One source of truth for reusable AI-agent skills — edited once, synced across five different coding tools.',
+    longDescription:
+      'my-skills is the repository behind every skill and tool I reuse. Skills are authored once in `skills/<name>/SKILL.md` and made available globally across Claude Code, Codex, Cursor, OpenCode, and Hermes — four of the five read the same SKILL.md format natively, and a setup script wires the rest via symlinks. It ships with 14 built-in skills (deep research, code review, PR analysis, frontend design, weekly reporting, and more), a scaffolder for new ones, and both per-project and machine-wide installation. It turns multi-step agent workflows into a single trigger phrase or slash command.',
+    tags: ['AI Agents', 'Automation', 'Tooling', 'Developer Experience'],
+    languages: ['Shell', 'Python'],
+    frameworks: ['Make'],
+    category: 'AI / Tooling',
+    variant: 'index',
+    highlights: [
+      'A single source of truth — edit a skill once, it syncs to all five tools via symlinks.',
+      '14 built-in skills, from deep research to code review, plus a scaffolder for new ones.',
+      'Triggers as a phrase or slash command, so complex agent workflows run without copy-paste.',
+    ],
+    images: [],
+    links: {
+      github: 'https://github.com/ChrisJulLimantoro/my-skills',
+    },
+  },
   {
     slug: 'randl',
     title: 'RandL',
@@ -48,7 +149,6 @@ const allProjects: Project[] = [
     ],
     links: {
       live: 'https://randlpad.com',
-      appStore: 'https://apps.apple.com/app/randl',
     },
   },
   {

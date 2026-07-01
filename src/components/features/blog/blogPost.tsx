@@ -15,12 +15,13 @@ import type { BlogPost } from '@/lib/data/blog';
 export function BlogPost({ post }: { post: BlogPost }) {
   return (
     <div className="space-y-16">
-      {/* Introduction */}
+      {/* Introduction — with a reading-room drop cap */}
       {post.intro && (
         <div className="prose prose-invert max-w-none
-          prose-p:text-slate-300 prose-p:leading-relaxed prose-p:mb-8 prose-p:text-lg prose-p:font-normal
+          prose-p:text-[#cfcfd8] prose-p:leading-relaxed prose-p:mb-8 prose-p:text-lg prose-p:font-normal
           prose-strong:text-white prose-strong:font-bold
-          prose-em:text-slate-200 prose-em:italic">
+          prose-em:text-slate-200 prose-em:italic
+          [&>p:first-of-type]:first-letter:font-editorial [&>p:first-of-type]:first-letter:float-left [&>p:first-of-type]:first-letter:mr-3 [&>p:first-of-type]:first-letter:text-6xl [&>p:first-of-type]:first-letter:leading-[0.7] [&>p:first-of-type]:first-letter:text-[#ffb627]">
           <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight, rehypeRaw]}>
             {post.intro}
           </ReactMarkdown>
@@ -35,12 +36,12 @@ export function BlogPost({ post }: { post: BlogPost }) {
         return (
           <section key={index} id={headingId} className="scroll-mt-24">
             {/* Section Title */}
-            <HeadingTag 
+            <HeadingTag
               className={`
-                font-display font-extrabold tracking-tight leading-tight mb-8
-                ${section.level === 2 
-                  ? 'text-5xl text-white border-b border-slate-700 pb-4 mt-20' 
-                  : 'text-3xl text-cyan-400 mt-12'
+                font-editorial tracking-tight leading-tight mb-8
+                ${section.level === 2
+                  ? 'text-4xl sm:text-5xl text-[#ECECF2] border-b pb-4 mt-20 border-[color:var(--line)]'
+                  : 'text-3xl text-[#ffb627] mt-12'
                 }
               `}
             >
@@ -49,23 +50,23 @@ export function BlogPost({ post }: { post: BlogPost }) {
 
             {/* Section Content */}
             <div className="prose prose-invert max-w-none 
-              prose-headings:text-white prose-headings:font-display prose-headings:scroll-mt-24 prose-headings:tracking-tight
-              prose-h4:text-2xl prose-h4:mb-6 prose-h4:mt-12 prose-h4:font-bold prose-h4:text-emerald-400 prose-h4:leading-snug
-              prose-p:text-slate-300 prose-p:leading-relaxed prose-p:mb-6 prose-p:text-lg prose-p:font-normal
-              prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:text-cyan-300 hover:prose-a:underline
+              prose-headings:text-[#ECECF2] prose-headings:font-editorial prose-headings:scroll-mt-24 prose-headings:tracking-tight
+              prose-h4:text-2xl prose-h4:mb-6 prose-h4:mt-12 prose-h4:text-[#34e0e0] prose-h4:leading-snug
+              prose-p:text-[#cfcfd8] prose-p:leading-relaxed prose-p:mb-6 prose-p:text-lg prose-p:font-normal
+              prose-a:text-[#ffb627] prose-a:no-underline hover:prose-a:underline
               prose-strong:text-white prose-strong:font-bold prose-strong:text-xl prose-strong:block prose-strong:mt-8 prose-strong:mb-4
               prose-em:text-slate-200 prose-em:italic
-              prose-code:text-cyan-300 prose-code:bg-slate-800/50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:before:content-none prose-code:after:content-none
-              prose-pre:bg-slate-900/50 prose-pre:border prose-pre:border-slate-700 prose-pre:rounded-xl prose-pre:p-6 prose-pre:overflow-x-auto prose-pre:my-10
-              prose-ul:text-slate-300 prose-ul:my-6 prose-ul:text-lg prose-ul:space-y-4 prose-ul:pl-6
-              prose-ol:text-slate-300 prose-ol:my-6 prose-ol:text-lg prose-ol:space-y-6
+              prose-code:text-[#ffb627] prose-code:bg-[var(--ink-2)] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:before:content-none prose-code:after:content-none
+              prose-pre:bg-[var(--ink-2)] prose-pre:border prose-pre:border-[color:var(--line)] prose-pre:rounded-xl prose-pre:p-6 prose-pre:overflow-x-auto prose-pre:my-10
+              prose-ul:text-[#cfcfd8] prose-ul:my-6 prose-ul:text-lg prose-ul:space-y-4 prose-ul:pl-6
+              prose-ol:text-[#cfcfd8] prose-ol:my-6 prose-ol:text-lg prose-ol:space-y-6
               prose-li:my-4 prose-li:text-lg prose-li:leading-relaxed prose-li:pl-2
-              prose-blockquote:border-l-4 prose-blockquote:border-cyan-500 prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-slate-400 prose-blockquote:my-10
+              prose-blockquote:border-l-4 prose-blockquote:border-[color:var(--gold)] prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-[#a9a9b6] prose-blockquote:my-10
               prose-img:rounded-xl prose-img:shadow-2xl prose-img:my-12
-              prose-hr:border-slate-700 prose-hr:my-16
-              prose-table:text-slate-300 prose-table:my-10
-              prose-th:bg-slate-800/50 prose-th:text-white prose-th:font-semibold
-              prose-td:border-slate-700"
+              prose-hr:border-[color:var(--line)] prose-hr:my-16
+              prose-table:text-[#cfcfd8] prose-table:my-10
+              prose-th:bg-[var(--ink-2)] prose-th:text-white prose-th:font-semibold
+              prose-td:border-[color:var(--line)]"
             >
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}

@@ -243,7 +243,7 @@ export function ChatWidget() {
             <div className="flex flex-col gap-2 p-4 bg-gradient-to-r from-slate-800/80 to-slate-900/80 border-b border-slate-700/50">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(198,242,78,0.18)', color: 'var(--lime)' }}>
                     <Sparkles size={16} />
                   </div>
                   <div>
@@ -334,12 +334,12 @@ export function ChatWidget() {
 
                   {/* Suggestions */}
                   <div className="flex flex-wrap justify-center gap-2 px-4 pt-4">
-                    {['What is Batavia?', 'Tell me about RandL', 'Why choose Next.js?'].map((q) => (
+                    {['What is AI Trader?', 'Tell me about NovelGit', 'Why choose Next.js?'].map((q) => (
                       <button
                         key={q}
                         onClick={() => setInputValue(q)}
                         disabled={isRateLimited}
-                        className="text-xs px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-cyan-500/50 text-slate-400 hover:text-cyan-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="text-xs px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-[#c6f24e]/60 text-slate-400 hover:text-[#c6f24e] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {q}
                       </button>
@@ -357,7 +357,7 @@ export function ChatWidget() {
                 >
                   <div
                     className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                      m.role === 'user' ? 'bg-cyan-500 text-black' : 'bg-slate-700 text-slate-300'
+                      m.role === 'user' ? 'bg-[#c6f24e] text-[#0b0b12]' : 'bg-slate-700 text-slate-300'
                     }`}
                   >
                     {m.role === 'user' ? <User size={14} /> : <Bot size={14} />}
@@ -365,7 +365,7 @@ export function ChatWidget() {
                   <div
                     className={`rounded-2xl px-4 py-2 text-sm max-w-[80%] shadow-sm relative group ${
                       m.role === 'user'
-                        ? 'bg-cyan-500 text-slate-900 rounded-tr-sm font-medium'
+                        ? 'bg-[#c6f24e] text-[#0b0b12] rounded-tr-sm font-medium'
                         : 'bg-slate-800 text-slate-200 rounded-tl-sm border border-slate-700/50'
                     }`}
                   >
@@ -376,7 +376,7 @@ export function ChatWidget() {
                           prose-ul:my-3 prose-ul:list-disc prose-ul:pl-5
                           prose-ol:my-3 prose-ol:list-decimal prose-ol:pl-5
                           prose-li:my-1 prose-li:text-slate-200
-                          prose-strong:text-cyan-300 prose-strong:font-semibold
+                          prose-strong:text-[#c6f24e] prose-strong:font-semibold
                           prose-headings:text-slate-100 prose-headings:font-bold
                           ${expandedMessageId === m.id ? '' : 'line-clamp-6'}`}>
                           <ReactMarkdown
@@ -388,7 +388,7 @@ export function ChatWidget() {
                                   return (
                                     <Link
                                       href={href || '#'}
-                                      className="text-cyan-400 hover:text-cyan-300 underline inline-flex items-center gap-1"
+                                      className="text-[#c6f24e] hover:opacity-80 underline inline-flex items-center gap-1"
                                       onClick={() => setIsOpen(false)}
                                     >
                                       {children}
@@ -401,7 +401,7 @@ export function ChatWidget() {
                                     href={href}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-cyan-400 hover:text-cyan-300 underline"
+                                    className="text-[#c6f24e] hover:opacity-80 underline"
                                     {...props}
                                   >
                                     {children}
@@ -457,12 +457,12 @@ export function ChatWidget() {
                   onChange={(e) => setInputValue(e.target.value)}
                   placeholder={isRateLimited ? "Rate limit reached - resets at midnight UTC+7" : "Type your question..."}
                   disabled={isRateLimited}
-                  className="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-full pl-5 pr-12 py-3 text-sm focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 transition-all placeholder:text-slate-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-full pl-5 pr-12 py-3 text-sm focus:outline-none focus:border-[#c6f24e]/60 focus:ring-1 focus:ring-[#c6f24e]/30 transition-all placeholder:text-slate-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <button
                   type="submit"
                   disabled={isLoading || !inputValue?.trim() || isRateLimited}
-                  className="absolute right-2 p-2 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full text-white shadow-lg disabled:opacity-50 disabled:shadow-none hover:shadow-cyan-500/20 transition-all transform hover:scale-105 active:scale-95"
+                  className="absolute right-2 p-2 bg-[#c6f24e] rounded-full text-[#0b0b12] shadow-lg disabled:opacity-50 disabled:shadow-none transition-all transform hover:scale-105 active:scale-95"
                 >
                   <Send size={16} />
                 </button>
@@ -477,7 +477,7 @@ export function ChatWidget() {
         onClick={() => setIsOpen(!isOpen)}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="pointer-events-auto w-14 h-14 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-2xl flex items-center justify-center hover:shadow-cyan-500/30 transition-shadow relative group"
+        className="pointer-events-auto w-14 h-14 rounded-full bg-[#c6f24e] text-[#0b0b12] shadow-2xl flex items-center justify-center hover:shadow-[#c6f24e]/30 transition-shadow relative group"
       >
         <AnimatePresence mode="wait">
           {isOpen ? (

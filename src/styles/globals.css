@@ -132,6 +132,164 @@
   }
 }
 
+/* ============================================================
+   "The Issue" — bold editorial design system (dark + vivid)
+   ============================================================ */
+@theme inline {
+  /* Bricolage Grotesque is the editorial display/headline face */
+  --font-editorial: var(--font-bricolage), 'Space Grotesk', sans-serif;
+}
+
+:root {
+  /* Surfaces — dark, slightly violet ink (distinct from GitHub grey) */
+  --ink: #0b0b12;
+  --ink-2: #13131f;
+  --ink-3: #1c1c2b;
+  --paper: #f6f2e9;
+  --hush: #8a8a99; /* muted text */
+  --line: rgba(255, 255, 255, 0.1);
+
+  /* Vivid, multi-hue accents (batik warmth + rhythm energy) */
+  --fuchsia: #ff3d81;
+  --gold: #ffb627;
+  --cyan: #34e0e0;
+  --lime: #c6f24e;
+}
+
+/* Editorial kicker label */
+.kicker {
+  font-family: var(--font-sans), sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+/* Display headline face */
+.font-editorial {
+  font-family: var(--font-editorial);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+}
+
+/* Marquee strip (pauses on hover) */
+@keyframes issue-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: issue-marquee 32s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Underline-wipe link hover */
+.link-wipe {
+  position: relative;
+}
+.link-wipe::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 2px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.link-wipe:hover::after,
+.link-wipe:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Film-grain overlay for print feel */
+.grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Text outline treatment for big editorial type */
+.text-stroke {
+  -webkit-text-stroke: 1.5px var(--paper);
+  color: transparent;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Page transition — CSS only, so content is never gated on JS animation */
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.page-enter {
+  animation: page-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes page-bar {
+  0% {
+    transform: scaleX(0);
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+.page-bar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 3px;
+  width: 100%;
+  transform-origin: left;
+  z-index: 60;
+  pointer-events: none;
+  animation: page-bar 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter {
+    animation: none;
+  }
+  .page-bar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
 /* Custom scrollbar for TOC */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;

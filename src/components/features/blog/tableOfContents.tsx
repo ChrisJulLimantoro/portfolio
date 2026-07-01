@@ -78,26 +78,22 @@ export function TableOfContents({ post }: TableOfContentsProps) {
       transition={{ duration: 0.5, delay: 0.2 }}
       className="sticky top-24 hidden lg:block"
     >
-      <div className="p-6 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
-        <h3 className="text-lg font-display font-bold text-white mb-4">
-          Table of Contents
-        </h3>
-        <nav className="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
-          {headings.map(({ id, text, level }) => (
+      <div className="border-l pl-5" style={{ borderColor: 'var(--line)' }}>
+        <span className="kicker mb-4 block" style={{ color: 'var(--gold)' }}>
+          In this piece
+        </span>
+        <nav className="space-y-2.5 max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
+          {headings.map(({ id, text, level }, i) => (
             <button
               key={id}
               onClick={() => scrollToHeading(id)}
-              className={`
-                block w-full text-left text-sm transition-all
-                ${level === 3 ? 'pl-4' : ''}
-                ${
-                  activeId === id
-                    ? 'text-cyan-400 font-semibold'
-                    : 'text-slate-400 hover:text-slate-300'
-                }
-              `}
+              className={`group flex w-full items-baseline gap-3 text-left text-sm transition-colors ${level === 3 ? 'pl-4' : ''}`}
+              style={{ color: activeId === id ? '#ffb627' : 'var(--hush)' }}
             >
-              {text}
+              <span className="font-editorial text-xs tabular-nums" style={{ color: activeId === id ? '#ffb627' : 'var(--ink-3)' }}>
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <span className="group-hover:text-[#ECECF2]">{text}</span>
             </button>
           ))}
         </nav>

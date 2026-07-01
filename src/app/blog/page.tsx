@@ -10,8 +10,8 @@ export default function BlogPage() {
   const blogPosts = getBlogPosts();
 
   return (
-    <div className="relative min-h-screen py-24 px-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="relative min-h-screen px-5 pb-24 pt-28 sm:px-8">
+      <div className="mx-auto max-w-7xl">
         <BlogList blogPosts={blogPosts} />
       </div>
     </div>

@@ -153,34 +153,34 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col">
+    <div className="min-h-screen bg-[#0b0b12] flex flex-col pt-14">
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800">
+      <header className="sticky top-0 z-10 backdrop-blur-xl border-b" style={{ background: 'color-mix(in srgb, var(--ink) 80%, transparent)', borderColor: 'var(--line)' }}>
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.back()}
-              className="text-slate-400 hover:text-white transition-colors"
+              className="text-[#a9a9b6] hover:text-white transition-colors"
             >
               <ArrowLeft size={20} />
             </button>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center">
-                <Sparkles size={20} className="text-white" />
+              <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: 'var(--lime)' }}>
+                <Sparkles size={20} className="text-[#0b0b12]" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-white">Ask MeBot</h1>
-                <p className="text-xs text-slate-400">Ask anything about Julius</p>
+                <span className="kicker block" style={{ color: 'var(--lime)' }}>The transcript</span>
+                <h1 className="font-editorial text-lg text-[#ECECF2]">Ask MeBot</h1>
               </div>
             </div>
           </div>
           {messages.length > 0 && (
             <button
               onClick={clearHistory}
-              className="flex items-center gap-2 px-3 py-2 text-sm text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-3 py-2 text-sm text-[#a9a9b6] hover:text-red-400 rounded-lg transition-colors"
             >
               <Trash2 size={16} />
-              Clear History
+              Clear history
             </button>
           )}
         </div>
@@ -191,21 +191,24 @@ export default function ChatPage() {
         <div className="max-w-4xl mx-auto px-4 py-8">
           {messages.length === 0 ? (
             <div className="text-center py-20">
-              <div className="w-20 h-20 bg-slate-800/50 rounded-full mx-auto flex items-center justify-center text-slate-600 mb-6">
+              <div className="w-20 h-20 rounded-full mx-auto flex items-center justify-center mb-6" style={{ background: 'var(--ink-2)', color: 'var(--lime)' }}>
                 <Sparkles size={40} />
               </div>
-              <h2 className="text-2xl font-bold text-slate-200 mb-2">
-                Hello! I&apos;m Julius&apos;s AI Assistant
+              <h2 className="font-editorial text-3xl text-[#ECECF2] mb-2">
+                Ask me anything about Julius
               </h2>
-              <p className="text-slate-400 mb-8">
-                Ask me about his projects, journey, thesis, or technical skills.
+              <p className="text-[#a9a9b6] mb-8">
+                His projects, journey, thesis, or the tech behind them — go ahead.
               </p>
               <div className="flex flex-wrap justify-center gap-3 max-w-2xl mx-auto">
-                {['What is Batavia?', 'Tell me about RandL', 'Why choose Next.js?', 'How can I contact you?'].map((q) => (
+                {['What is AI Trader?', 'Tell me about NovelGit', 'Why choose Next.js?', 'How can I contact you?'].map((q) => (
                   <button
                     key={q}
                     onClick={() => setInputValue(q)}
-                    className="px-4 py-2 rounded-full bg-slate-800 border border-slate-700 hover:border-cyan-500/50 text-slate-300 hover:text-cyan-400 transition-colors text-sm"
+                    className="px-4 py-2 rounded-full border text-[#cfcfd8] transition-colors text-sm hover:text-[#0b0b12]"
+                    style={{ borderColor: 'var(--line)' }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--lime)')}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                   >
                     {q}
                   </button>
@@ -223,17 +226,16 @@ export default function ChatPage() {
                 >
                   <div className={`flex gap-4 ${m.role === 'user' ? 'flex-row-reverse' : ''}`}>
                     <div
-                      className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
-                        m.role === 'user'
-                          ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white'
-                          : 'bg-slate-800 text-slate-300'
-                      }`}
+                      className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
+                      style={m.role === 'user'
+                        ? { background: 'var(--lime)', color: '#0b0b12' }
+                        : { background: 'var(--ink-2)', color: '#cfcfd8' }}
                     >
                       {m.role === 'user' ? <User size={20} /> : <Bot size={20} />}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className={`flex items-center gap-2 mb-2 ${m.role === 'user' ? 'justify-end' : ''}`}>
-                        <span className="text-sm font-medium text-slate-300">
+                        <span className="kicker" style={{ color: 'var(--hush)' }}>
                           {m.role === 'user' ? 'You' : 'MeBot'}
                         </span>
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -254,20 +256,19 @@ export default function ChatPage() {
                         </div>
                       </div>
                       <div
-                        className={`rounded-2xl px-4 py-3 ${
-                          m.role === 'user'
-                            ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white ml-auto max-w-2xl'
-                            : 'bg-slate-800/50 text-slate-200 border border-slate-700/50'
-                        }`}
+                        className="rounded-2xl px-4 py-3"
+                        style={m.role === 'user'
+                          ? { background: 'var(--lime)', color: '#0b0b12', marginLeft: 'auto', maxWidth: '42rem' }
+                          : { background: 'var(--ink-2)', color: '#e6e6ee', border: '1px solid var(--line)' }}
                       >
                         {m.role === 'assistant' ? (
-                          <div className="prose prose-invert prose-sm max-w-none 
-                            prose-p:leading-relaxed prose-p:my-2 
+                          <div className="prose prose-invert prose-sm max-w-none
+                            prose-p:leading-relaxed prose-p:my-2
                             prose-ul:my-3 prose-ul:list-disc prose-ul:pl-5
                             prose-ol:my-3 prose-ol:list-decimal prose-ol:pl-5
-                            prose-li:my-1 prose-li:text-slate-200
-                            prose-strong:text-cyan-300 prose-strong:font-semibold
-                            prose-headings:text-slate-100 prose-headings:font-bold">
+                            prose-li:my-1 prose-li:text-[#e6e6ee]
+                            prose-strong:text-[#c6f24e] prose-strong:font-semibold
+                            prose-headings:text-[#ECECF2] prose-headings:font-bold">
                             <ReactMarkdown
                               remarkPlugins={[remarkGfm]}
                               components={{
@@ -277,7 +278,7 @@ export default function ChatPage() {
                                     return (
                                       <Link
                                         href={href || '#'}
-                                        className="text-cyan-400 hover:text-cyan-300 underline"
+                                        className="text-[#c6f24e] hover:opacity-80 underline"
                                       >
                                         {children}
                                       </Link>
@@ -296,9 +297,9 @@ export default function ChatPage() {
                                   );
                                 },
                                 code: ({ inline, ...props }: any) => (
-                                  inline ? 
-                                    <code className="bg-slate-700 px-1.5 py-0.5 rounded text-cyan-300 text-xs" {...props} /> :
-                                    <code className="block bg-slate-700 p-3 rounded my-2 text-xs" {...props} />
+                                  inline ?
+                                    <code className="bg-[#1c1c2b] px-1.5 py-0.5 rounded text-[#c6f24e] text-xs" {...props} /> :
+                                    <code className="block bg-[#1c1c2b] p-3 rounded my-2 text-xs" {...props} />
                                 ),
                               }}
                             >
@@ -315,15 +316,15 @@ export default function ChatPage() {
               ))}
               {isLoading && (
                 <div className="flex gap-4">
-                  <div className="shrink-0 w-10 h-10 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center">
+                  <div className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center" style={{ background: 'var(--ink-2)', color: '#cfcfd8' }}>
                     <Bot size={20} />
                   </div>
                   <div className="flex-1">
-                    <span className="text-sm font-medium text-slate-300 mb-2 block">MeBot</span>
-                    <div className="bg-slate-800/50 rounded-2xl px-4 py-3 border border-slate-700/50 flex gap-1">
-                      <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="w-2 h-2 bg-slate-500 rounded-full" />
-                      <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-2 h-2 bg-slate-500 rounded-full" />
-                      <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-2 h-2 bg-slate-500 rounded-full" />
+                    <span className="kicker mb-2 block" style={{ color: 'var(--hush)' }}>MeBot</span>
+                    <div className="rounded-2xl px-4 py-3 flex gap-1" style={{ background: 'var(--ink-2)', border: '1px solid var(--line)' }}>
+                      <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="w-2 h-2 rounded-full" style={{ background: 'var(--lime)' }} />
+                      <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-2 h-2 rounded-full" style={{ background: 'var(--lime)' }} />
+                      <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-2 h-2 rounded-full" style={{ background: 'var(--lime)' }} />
                     </div>
                   </div>
                 </div>
@@ -335,19 +336,21 @@ export default function ChatPage() {
       </main>
 
       {/* Input Area */}
-      <footer className="sticky bottom-0 bg-slate-900/80 backdrop-blur-xl border-t border-slate-800">
+      <footer className="sticky bottom-0 backdrop-blur-xl border-t" style={{ background: 'color-mix(in srgb, var(--ink) 80%, transparent)', borderColor: 'var(--line)' }}>
         <div className="max-w-4xl mx-auto px-4 py-4">
           <form onSubmit={handleSubmit} className="relative">
             <input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Ask me anything about Julius..."
-              className="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-2xl pl-6 pr-14 py-4 text-sm focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all placeholder:text-slate-600"
+              placeholder="Ask me anything about Julius…"
+              className="w-full rounded-2xl pl-6 pr-14 py-4 text-sm transition-all placeholder:text-[#6b6b78] focus:outline-none focus:ring-2 focus:ring-[#c6f24e] text-[#e6e6ee]"
+              style={{ background: 'var(--ink-2)', border: '1px solid var(--line)' }}
             />
             <button
               type="submit"
               disabled={isLoading || !inputValue?.trim()}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl text-white shadow-lg disabled:opacity-50 disabled:shadow-none hover:shadow-cyan-500/20 transition-all transform hover:scale-105 active:scale-95"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 rounded-xl text-[#0b0b12] shadow-lg disabled:opacity-50 transition-transform hover:scale-105 active:scale-95"
+              style={{ background: 'var(--lime)' }}
             >
               <Send size={18} />
             </button>

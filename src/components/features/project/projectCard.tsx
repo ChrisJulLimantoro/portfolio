@@ -1,92 +1,79 @@
-import { motion } from 'framer-motion';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Sparkles, ArrowUpRight } from 'lucide-react';
+'use client';
+
 import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { ArrowUpRight } from 'lucide-react';
+import { Project } from '@/lib/data';
+import { accentFor, variantLabel } from './projectAccent';
 
-interface ProjectCardProps {
-  slug: string;
-  title: string;
-  description: string;
-  tags: string[];
-  languages: string[];
-  frameworks: string[];
-  highlights: string[];
-  image?: string;
-  delay?: number;
-}
+/** Editorial project card: screenshot when present, designed accent cover when not. */
+export function ProjectCard({ project, index = 0 }: { project: Project; index?: number }) {
+  const accent = accentFor(project);
+  const cover = project.images[0]?.src;
 
-export function ProjectCard({
-  slug,
-  title,
-  description,
-  tags,
-  languages,
-  frameworks,
-  highlights,
-  image,
-  delay = 0,
-}: ProjectCardProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.5, delay }}
-      whileHover={{ y: -8 }}
+      transition={{ duration: 0.5, delay: (index % 6) * 0.05 }}
     >
-      <Link href={`/project/${slug}`} className="block h-full group">
-        <Card className="overflow-hidden border-slate-700/50 group-hover:border-cyan-500/50 transition-all group-hover:shadow-xl group-hover:shadow-cyan-500/20 bg-slate-800/50 backdrop-blur-sm h-full flex flex-col relative">
-          <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-            <div className="bg-cyan-500/20 p-2 rounded-full backdrop-blur-md border border-cyan-500/30">
-              <ArrowUpRight className="text-cyan-400" size={18} />
-            </div>
-          </div>
-
-          {image && (
-            <div className="h-48 bg-gradient-to-br from-slate-800 to-slate-900 overflow-hidden relative">
-              <img
-                src={image}
-                alt={title}
-                className="w-full h-full object-cover opacity-40 mix-blend-luminosity group-hover:opacity-60 group-hover:scale-110 transition-all duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
+      <Link
+        href={`/project/${project.slug}`}
+        className="group relative flex flex-col overflow-hidden focus-visible:outline-none focus-visible:ring-2"
+        style={{ ['--accent' as string]: accent }}
+      >
+        <div className="relative aspect-[16/11] w-full overflow-hidden" style={{ background: 'var(--ink-2)' }}>
+          {cover ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={cover}
+              alt={project.title}
+              className="h-full w-full object-cover opacity-70 grayscale transition-all duration-500 ease-out group-hover:scale-[1.04] group-hover:opacity-100 group-hover:grayscale-0"
+            />
+          ) : (
+            <div
+              className="flex h-full w-full items-center justify-center transition-transform duration-500 group-hover:scale-[1.03]"
+              style={{ background: `radial-gradient(120% 120% at 25% 15%, ${accent}26, transparent 60%), var(--ink-2)` }}
+            >
+              <span className="font-editorial text-7xl sm:text-8xl" style={{ color: accent }}>
+                {project.title.charAt(0)}
+              </span>
             </div>
           )}
-
-          <div className="p-6 flex flex-col flex-1">
-            <h3 className="mb-3 text-white group-hover:text-cyan-400 transition-colors">
-              {title}
-            </h3>
-            <p className="text-slate-400 mb-4 flex-1 line-clamp-2">
-              {description}
-            </p>
-
-            {/* AI Highlight Box */}
-            <div className="mb-4 p-3 rounded-lg bg-gradient-to-r from-cyan-500/10 to-emerald-500/10 border border-cyan-500/20">
-              <div className="flex items-start gap-2">
-                <Sparkles
-                  className="text-cyan-400 mt-0.5 flex-shrink-0"
-                  size={16}
-                />
-                <p className="text-cyan-100 text-sm">{highlights[0]}</p>
-              </div>
-            </div>
-
-            {/* Tags */}
-            <div className="flex flex-wrap gap-2 mt-auto">
-              {[...languages, ...frameworks, ...tags].slice(0, 6).map((tag) => (
-                <Badge
-                  key={tag}
-                  variant="secondary"
-                  className="bg-slate-700/50 text-slate-300 border-0 hover:bg-slate-700 transition-colors"
-                >
-                  {tag}
-                </Badge>
-              ))}
-            </div>
+          <div
+            className="absolute right-4 top-4 flex h-10 w-10 translate-y-2 items-center justify-center rounded-full text-[#0b0b12] opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100"
+            style={{ background: accent }}
+          >
+            <ArrowUpRight size={20} />
           </div>
-        </Card>
+          <span className="absolute left-4 top-4 rounded-full px-2.5 py-1 font-sans text-[11px] font-semibold text-[#0b0b12]" style={{ background: accent }}>
+            {variantLabel(project)}
+          </span>
+          <span
+            className="absolute inset-x-0 bottom-0 h-1 origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100"
+            style={{ background: accent }}
+          />
+        </div>
+
+        <div className="pt-4">
+          <span className="kicker" style={{ color: accent }}>
+            {project.category}
+          </span>
+          <h3 className="font-editorial mt-2 text-3xl text-[#ECECF2] transition-colors duration-300 group-hover:text-[color:var(--accent)]">
+            {project.title}
+          </h3>
+          <p className="mt-2 text-sm leading-relaxed text-[#a9a9b6] line-clamp-2">
+            {project.description}
+          </p>
+          <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1">
+            {[...project.languages, ...project.frameworks].slice(0, 4).map((t) => (
+              <span key={t} className="kicker" style={{ color: 'var(--hush)' }}>
+                {t}
+              </span>
+            ))}
+          </div>
+        </div>
       </Link>
     </motion.div>
   );

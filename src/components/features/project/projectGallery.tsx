@@ -8,6 +8,7 @@ import { ProjectImage } from '@/lib/data';
 interface ProjectGalleryProps {
   images: (string | ProjectImage)[];
   title: string;
+  accent?: string;
 }
 
 type Orientation = 'landscape' | 'portrait' | 'square';
@@ -18,7 +19,7 @@ interface GalleryItem {
   originalIndex: number;
 }
 
-export function ProjectGallery({ images, title }: ProjectGalleryProps) {
+export function ProjectGallery({ images, title, accent = '#ffb627' }: ProjectGalleryProps) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [detectedOrientations, setDetectedOrientations] = useState<Record<string, Orientation>>({});
 
@@ -144,7 +145,7 @@ export function ProjectGallery({ images, title }: ProjectGalleryProps) {
 
   // Generate grid classes based on orientation and position
   const getGridClasses = (index: number, orientation: Orientation) => {
-    let baseClasses = "relative overflow-hidden rounded-3xl border border-slate-800 group shadow-2xl cursor-pointer bg-slate-900 min-h-[200px]";
+    let baseClasses = "relative overflow-hidden rounded-2xl border border-[color:var(--line)] group shadow-2xl cursor-pointer bg-[var(--ink-2)] min-h-[200px]";
     
     // Hero item (usually first)
     if (index === 0) {
@@ -166,10 +167,13 @@ export function ProjectGallery({ images, title }: ProjectGalleryProps) {
 
   return (
     <section className="mt-20">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
-        <h2 className="text-3xl font-bold text-white text-center md:text-left">Project Showcase</h2>
-        <p className="text-slate-500 text-sm font-medium uppercase tracking-widest bg-slate-800/50 px-3 py-1 rounded-full border border-slate-700/50">
-          {images.length} {images.length === 1 ? 'Shot' : 'Shots'}
+      <div className="mb-10 flex flex-col justify-between gap-2 border-t pt-6 md:flex-row md:items-end" style={{ borderColor: 'var(--line)' }}>
+        <div>
+          <span className="kicker" style={{ color: accent }}>The gallery</span>
+          <h2 className="font-editorial mt-2 text-4xl text-[#ECECF2]">Screens &amp; shots</h2>
+        </div>
+        <p className="kicker self-start md:self-end" style={{ color: 'var(--hush)' }}>
+          {images.length} {images.length === 1 ? 'shot' : 'shots'} — click to enlarge
         </p>
       </div>
       
@@ -191,13 +195,13 @@ export function ProjectGallery({ images, title }: ProjectGalleryProps) {
                 alt={`${title} screenshot ${index + 1}`}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out opacity-80 group-hover:opacity-100"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8">
-                <div className="flex items-center gap-2 text-white font-medium text-lg transform translateY(20px) group-hover:translateY(0) transition-transform duration-500">
-                  <Maximize2 size={20} className="text-cyan-400" />
-                  <span>Enlarge View</span>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0b0b12]/85 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8">
+                <div className="flex items-center gap-2 font-semibold text-lg text-[#ECECF2]">
+                  <Maximize2 size={20} style={{ color: accent }} />
+                  <span>Enlarge</span>
                 </div>
               </div>
-              <div className="absolute inset-0 border-[1px] border-white/5 rounded-3xl pointer-events-none" />
+              <div className="absolute inset-0 border border-white/5 rounded-2xl pointer-events-none" />
             </motion.div>
           );
         })}

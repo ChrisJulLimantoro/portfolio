@@ -24,46 +24,37 @@ export default async function JourneyDetailPage({ params }: PageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-200 relative overflow-hidden">
-      {/* Background Gradient */}
-      <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-cyan-950/20 to-transparent z-0 pointer-events-none" />
-
+    <main className="relative min-h-screen overflow-hidden text-[#cfcfd8]">
       {/* Header */}
-      <header className="relative z-10 pt-24 pb-12 px-6 max-w-5xl mx-auto flex flex-col items-center text-center">
-        <Link 
+      <header className="relative z-10 mx-auto flex max-w-5xl flex-col px-5 pb-12 pt-28 sm:px-8">
+        <Link
           href="/my-journey"
-          className="inline-flex items-center gap-2 text-sm text-cyan-400 hover:text-cyan-300 transition-colors mb-8 self-start md:self-center"
+          className="link-wipe mb-10 inline-flex w-fit items-center gap-2 font-sans text-sm transition-colors"
+          style={{ color: 'var(--cyan)' }}
         >
           <ArrowLeft size={16} />
-          Back to Timeline
+          Back to the timeline
         </Link>
-        
-        <h1 className="text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-tr from-slate-700 to-slate-800 absolute top-10 left-1/2 -translate-x-1/2 -z-10 opacity-20 select-none">
-          {yearData.year}
-        </h1>
 
-        <span className="text-cyan-400 font-mono text-sm tracking-widest uppercase mb-4">
-          Year {yearData.year}
-        </span>
-        <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-6">
+        <span className="kicker" style={{ color: 'var(--cyan)' }}>Chapter — {yearData.year}</span>
+        <h1 className="font-editorial mt-3 text-5xl text-[#ECECF2] sm:text-8xl">
           {yearData.title}
-        </h2>
-        <p className="max-w-2xl text-lg text-slate-400 leading-relaxed">
+        </h1>
+        <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[#a9a9b6]">
           {yearData.description}
         </p>
       </header>
 
-      {/* Main Content: Story Blocks */}
+      {/* Story */}
       <section className="relative z-10 pb-24">
         {yearData.story.length > 0 ? (
           <StoryRenderer blocks={yearData.story} />
         ) : (
-          <div className="text-center py-20 text-slate-500 italic">
-            Story content coming soon...
+          <div className="py-20 text-center font-editorial text-2xl text-[#6b6b78]">
+            This chapter is still being written…
           </div>
         )}
       </section>
-
     </main>
   );
 }

@@ -1,188 +1,93 @@
 'use client';
 
-import { motion, useScroll, useTransform } from 'framer-motion';
-import Image from 'next/image';
 import { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
+import Image from 'next/image';
+import Link from 'next/link';
+import { getJourneyData } from '@/lib/data';
 
 export function MyJourneySection() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start end', 'end start'],
-  });
-
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -200]);
-  const y3 = useTransform(scrollYProgress, [0, 1], [0, -150]);
-  const y4 = useTransform(scrollYProgress, [0, 1], [0, -250]);
-
-  const mobileImages = [
-    { src: '/images/IMG_3987.jpg', y: y1, left: '5%', blur: 'blur-sm' },
-    { src: '/images/IMG_3982.jpg', y: y2, left: '60%', blur: 'blur-md' },
-    { src: '/images/FTR00997.jpeg', y: y3, left: '10%', blur: 'blur-sm' },
-    { src: '/images/IMG_2199.jpg', y: y4, left: '55%', blur: 'blur-md' },
-  ];
+  const years = getJourneyData();
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
-    <section ref={containerRef} className="relative py-32 px-6 overflow-hidden">
-      {/* Mobile Parallax Background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none md:hidden z-0">
-        {mobileImages.map((img, i) => (
-          <motion.div
-            key={i}
-            style={{ y: img.y, left: img.left, top: `${20 + i * 20}%` }}
-            className={`absolute w-40 h-40 opacity-50 ${img.blur}`}
-          >
-            <Image
-              src={img.src}
-              alt="Journey background"
-              fill
-              className="object-cover rounded-xl transform rotate-12"
-            />
-          </motion.div>
-        ))}
-      </div>
-
-      <div className="max-w-6xl mx-auto flex flex-col items-center text-center relative z-10">
-        {/* Title */}
-        <motion.h2
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="font-display font-bold text-6xl md:text-8xl text-white mb-10"
+    <section ref={ref} className="relative px-5 py-24 sm:px-8">
+      <div className="mx-auto max-w-7xl">
+        {/* Section head */}
+        <div
+          className="mb-12 flex flex-wrap items-end justify-between gap-4 border-b pb-5"
+          style={{ borderColor: 'var(--line)' }}
         >
-          My Journey
-        </motion.h2>
-
-        {/* Decorative Background Blur Effects */}
-        <motion.div
-          className="absolute -top-10 -left-20 w-72 h-72 bg-cyan-500/20 blur-3xl rounded-full -z-10"
-          animate={{ y: [0, -15, 0] }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute top-20 -right-20 w-80 h-80 bg-emerald-500/20 blur-3xl rounded-full -z-10"
-          animate={{ y: [0, 20, 0] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-        />
-
-        {/* Main Content */}
-        <div className="relative flex flex-col md:flex-row items-center justify-center gap-16 md:gap-24">
-          {/* Left Photo Gallery */}
-          <motion.div
-            initial={{ opacity: 0, x: -80 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1 }}
-            className="hidden md:flex flex-col gap-6 relative"
-          >
-            {[
-              {
-                src: '/images/IMG_3987.jpg',
-                caption: 'Becoming tutor',
-                rotate: '-6deg',
-              },
-              {
-                src: '/images/IMG_3982.jpg',
-                caption: 'Enjoying College',
-                rotate: '4deg',
-              },
-            ].map((photo, i) => (
-              <motion.div
-                key={i}
-                whileHover={{ scale: 1.05, rotate: 0 }}
-                transition={{ duration: 0.3 }}
-                style={{ rotate: photo.rotate }}
-                className="bg-white p-2 rounded-xl shadow-lg w-52 flex flex-col items-center"
-              >
-                <Image
-                  src={photo.src}
-                  alt={photo.caption}
-                  width={400}
-                  height={400}
-                  className="rounded-lg object-cover"
-                />
-                <p className="font-display text-black text-sm mt-2">
-                  {photo.caption}
-                </p>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          {/* Center Description */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            className="max-w-2xl z-10 text-center md:text-left"
-          >
-            <p className="text-slate-300 text-lg md:text-xl leading-relaxed">
-              My journey started{' '}
-              <span className="text-cyan-400">three years ago</span>, when I
-              wrote my very first line of code. From countless trials and
-              errors, late-night debugging, and endless curiosity — I gradually
-              evolved from a beginner to a{' '}
-              <span className="text-emerald-400">
-                professional software engineer
-              </span>
-              .
-              <br />
-              <br />
-              Today, I create complex, scalable systems while still holding on
-              to that same spark that made me fall in love with code in the
-              first place.
-            </p>
-
-            {/* CTA Button */}
-            <motion.a
-              href="/my-journey"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="mt-10 inline-flex items-center justify-center rounded-lg font-display font-bold text-2xl text-white transition-all underline"
-            >
-              Explore My Journey →
-            </motion.a>
-          </motion.div>
-
-          {/* Right Photo Gallery */}
-          <motion.div
-            initial={{ opacity: 0, x: 80 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1 }}
-            className="hidden md:flex flex-col gap-6 relative"
-          >
-            {[
-              {
-                src: '/images/FTR00997.jpeg',
-                caption: 'Intern @Apple Developer Academy',
-                rotate: '5deg',
-              },
-              {
-                src: '/images/IMG_2199.jpg',
-                caption: 'Team collaboration',
-                rotate: '-5deg',
-              },
-            ].map((photo, i) => (
-              <motion.div
-                key={i}
-                whileHover={{ scale: 1.05, rotate: 0 }}
-                transition={{ duration: 0.3 }}
-                style={{ rotate: photo.rotate }}
-                className="bg-white p-2 rounded-xl shadow-lg w-52 flex flex-col items-center"
-              >
-                <Image
-                  src={photo.src}
-                  alt={photo.caption}
-                  width={400}
-                  height={400}
-                  className="rounded-lg object-cover"
-                />
-                <p className="font-display text-black text-sm mt-2">
-                  {photo.caption}
-                </p>
-              </motion.div>
-            ))}
-          </motion.div>
+          <div>
+            <span className="kicker" style={{ color: 'var(--cyan)' }}>
+              The Timeline
+            </span>
+            <h2 className="font-editorial mt-3 text-5xl text-[#ECECF2] sm:text-7xl">
+              How I got here
+            </h2>
+          </div>
+          <Link href="/my-journey" className="kicker link-wipe pb-1 text-[#ECECF2]">
+            Full story →
+          </Link>
         </div>
+
+        {/* Numbered spine — years are genuinely sequential */}
+        <ol>
+          {years.map((year, i) => (
+            <motion.li
+              key={year.slug}
+              initial={{ opacity: 0, y: 28 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.55, delay: i * 0.08 }}
+            >
+              <Link
+                href={`/my-journey/${year.slug}`}
+                className="group grid grid-cols-[auto_1fr] items-start gap-x-5 border-t py-7 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#34e0e0] sm:grid-cols-[auto_1fr_auto] sm:gap-x-10"
+                style={{ borderColor: 'var(--line)' }}
+              >
+                {/* Year, oversized */}
+                <span className="font-editorial text-3xl leading-none text-[#34e0e0] transition-transform duration-300 group-hover:-translate-y-0.5 sm:text-5xl">
+                  {year.year}
+                </span>
+
+                {/* Content */}
+                <div className="min-w-0">
+                  <h3 className="font-editorial text-2xl text-[#ECECF2] transition-colors duration-300 group-hover:text-[#ffb627] sm:text-4xl">
+                    {year.title}
+                  </h3>
+                  <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#a9a9b6] sm:text-base">
+                    {year.description}
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
+                    {year.milestones.slice(0, 3).map((m) => (
+                      <span
+                        key={m.title}
+                        className="kicker"
+                        style={{ color: 'var(--hush)' }}
+                      >
+                        {m.title}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Hover-preview photo (desktop) */}
+                {year.photos[0] && (
+                  <div className="relative hidden h-24 w-32 shrink-0 overflow-hidden rounded sm:block">
+                    <Image
+                      src={year.photos[0].src}
+                      alt={year.photos[0].caption || year.title}
+                      fill
+                      sizes="128px"
+                      className="object-cover opacity-0 grayscale transition-all duration-500 group-hover:opacity-100 group-hover:grayscale-0"
+                    />
+                  </div>
+                )}
+              </Link>
+            </motion.li>
+          ))}
+        </ol>
       </div>
     </section>
   );

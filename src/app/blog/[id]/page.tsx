@@ -46,11 +46,11 @@ export default async function BlogPostPage({
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/60 via-slate-900/80 to-slate-900" />
-        
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0b0b12]/50 via-[#0b0b12]/80 to-[#0b0b12]" />
+
         {/* Hero Content */}
         <div className="absolute inset-0 flex items-end">
-          <div className="max-w-7xl mx-auto px-6 pb-12 w-full">
+          <div className="max-w-7xl mx-auto px-5 sm:px-8 pb-12 w-full">
             <Button
               variant="ghost"
               asChild
@@ -58,21 +58,21 @@ export default async function BlogPostPage({
             >
               <Link href="/blog">
                 <ArrowLeft className="mr-2" size={18} />
-                Back to Blog
+                Back to the reading room
               </Link>
             </Button>
 
             <div className="mb-4">
-              <Badge className="bg-cyan-500/90 text-white border-0 mb-4">
+              <span className="inline-block rounded-full px-3 py-1 font-sans text-xs font-semibold text-[#0b0b12]" style={{ background: 'var(--gold)' }}>
                 {post.category}
-              </Badge>
+              </span>
             </div>
 
-            <h1 className="text-4xl md:text-6xl font-display font-bold text-white mb-6 leading-tight">
+            <h1 className="font-editorial text-4xl md:text-7xl text-white mb-6 leading-[0.95] max-w-4xl">
               {post.title}
             </h1>
 
-            <div className="flex items-center gap-6 text-slate-300">
+            <div className="flex items-center gap-6 text-[#cfcfd8]">
               <span className="flex items-center gap-2">
                 <Calendar size={16} />
                 {post.date}
@@ -100,36 +100,27 @@ export default async function BlogPostPage({
               {/* Tags */}
               <div className="flex flex-wrap gap-2 mb-8">
                 {post.tags.map((tag) => (
-                  <Badge
-                    key={tag}
-                    variant="secondary"
-                    className="bg-slate-700/50 text-slate-300 border-0"
-                  >
+                  <span key={tag} className="rounded-full border px-3 py-1 font-sans text-xs text-[#a9a9b6]" style={{ borderColor: 'var(--line)' }}>
                     {tag}
-                  </Badge>
+                  </span>
                 ))}
               </div>
 
               {/* AI Summary Box */}
-              <div className="mb-12 p-6 rounded-2xl bg-gradient-to-r from-cyan-500/10 to-emerald-500/10 border border-cyan-500/20 backdrop-blur-sm">
+              <div className="mb-12 rounded-2xl border p-6" style={{ borderColor: 'var(--line)', background: 'rgba(255,182,39,0.06)' }}>
                 <div className="flex items-start gap-3 mb-3">
-                  <Sparkles
-                    className="text-cyan-400 mt-1 flex-shrink-0"
-                    size={20}
-                  />
-                  <h3 className="text-xl font-semibold text-cyan-100">TL;DR</h3>
+                  <Sparkles className="mt-1 flex-shrink-0" size={20} style={{ color: 'var(--gold)' }} />
+                  <h3 className="kicker" style={{ color: 'var(--gold)' }}>TL;DR</h3>
                 </div>
-                <p className="text-slate-300 leading-relaxed">{post.aiSummary}</p>
+                <p className="text-[#cfcfd8] leading-relaxed">{post.aiSummary}</p>
               </div>
 
               {/* Blog Content */}
               <BlogPost post={post} />
 
               {/* Related Posts */}
-              <div className="mt-16 pt-8 border-t border-slate-700/50">
-                <h3 className="text-3xl font-display font-bold mb-6 text-white">
-                  Related Articles
-                </h3>
+              <div className="mt-16 pt-8 border-t" style={{ borderColor: 'var(--line)' }}>
+                <span className="kicker mb-6 block" style={{ color: 'var(--gold)' }}>Keep reading</span>
                 <div className="grid md:grid-cols-2 gap-6">
                   {relatedPosts.map((related) => (
                     <BlogCard key={related.id} post={related} />
