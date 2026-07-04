@@ -4,10 +4,10 @@ import { motion } from 'framer-motion';
 import { Terminal, GitBranch } from 'lucide-react';
 
 const SKILLS = [
-  'deep-research', 'code-review', 'pr-analysis', 'frontend-design',
-  'weekly-report', 'commit', 'security-review', 'changelog',
-  'test-author', 'refactor', 'doc-writer', 'release-notes',
-  'skill-scaffold', 'triage',
+  'codereview', 'command-development', 'creative-ui', 'deep-research',
+  'find-skills', 'frontend-design', 'graphify', 'hook-development',
+  'plugin-settings', 'plugin-structure', 'pr-comment', 'pr-feedback',
+  'pr-review', 'skill-creator', 'skill-development', 'weekly-report',
 ];
 
 const TOOLS = ['Claude Code', 'Codex', 'Cursor', 'OpenCode', 'Hermes'];

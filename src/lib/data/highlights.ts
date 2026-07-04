@@ -117,7 +117,7 @@ export const getToolbox = () => ({
   title: 'my-skills',
   dek: 'Every skill and tool I reuse, in one repository — edited once, symlink-synced across Claude Code, Codex, Cursor, OpenCode and Hermes.',
   meta: 'The toolbox',
-  count: '14 skills',
+  count: '16 skills',
   accent: 'lime' as Accent,
   href: 'https://github.com/ChrisJulLimantoro/my-skills',
 });

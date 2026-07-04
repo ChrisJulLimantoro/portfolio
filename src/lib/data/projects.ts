@@ -107,7 +107,7 @@ const allProjects: Project[] = [
     description:
       'One source of truth for reusable AI-agent skills — edited once, synced across five different coding tools.',
     longDescription:
-      'my-skills is the repository behind every skill and tool I reuse. Skills are authored once in `skills/<name>/SKILL.md` and made available globally across Claude Code, Codex, Cursor, OpenCode, and Hermes — four of the five read the same SKILL.md format natively, and a setup script wires the rest via symlinks. It ships with 14 built-in skills (deep research, code review, PR analysis, frontend design, weekly reporting, and more), a scaffolder for new ones, and both per-project and machine-wide installation. It turns multi-step agent workflows into a single trigger phrase or slash command.',
+      'my-skills is the repository behind every skill and tool I reuse. Skills are authored once in `skills/<name>/SKILL.md` and made available globally across Claude Code, Codex, Cursor, OpenCode, and Hermes — four of the five read the same SKILL.md format natively, and a setup script wires the rest via symlinks. It ships with 16 built-in skills (deep research, code review, PR review, frontend design, knowledge-graph building, weekly reporting, and more), a scaffolder for new ones, and both per-project and machine-wide installation. It turns multi-step agent workflows into a single trigger phrase or slash command.',
     tags: ['AI Agents', 'Automation', 'Tooling', 'Developer Experience'],
     languages: ['Shell', 'Python'],
     frameworks: ['Make'],
@@ -115,7 +115,7 @@ const allProjects: Project[] = [
     variant: 'index',
     highlights: [
       'A single source of truth — edit a skill once, it syncs to all five tools via symlinks.',
-      '14 built-in skills, from deep research to code review, plus a scaffolder for new ones.',
+      '16 built-in skills, from deep research to PR review, plus a scaffolder for new ones.',
       'Triggers as a phrase or slash command, so complex agent workflows run without copy-paste.',
     ],
     images: [],
