@@ -99,7 +99,7 @@ export function ChineseLearner() {
         >
           <div>
             <span className="kicker" style={{ color: 'var(--lime)' }}>
-              Personal Lab — now playing
+              Personal Lab — now playing<span className="caret" aria-hidden />
             </span>
             <h2 className="font-editorial mt-3 text-5xl text-[#ECECF2] sm:text-7xl">
               学 — I&apos;m learning Chinese

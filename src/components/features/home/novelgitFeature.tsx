@@ -33,7 +33,7 @@ export function NovelgitFeature() {
           style={{ borderColor: 'var(--line)' }}
         >
           <span className="kicker" style={{ color: 'var(--gold)' }}>
-            The Feature — published &amp; live
+            The Feature — published &amp; live<span className="caret" aria-hidden />
           </span>
           <span className="kicker" style={{ color: 'var(--hush)' }}>
             By Julius · AI Automation

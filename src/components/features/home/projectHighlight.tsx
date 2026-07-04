@@ -23,7 +23,11 @@ export function ProjectHighlight() {
   const inView = useInView(ref, { once: true, margin: '-120px' });
 
   return (
-    <section ref={ref} className="relative px-5 py-24 sm:px-8">
+    <section
+      ref={ref}
+      className="paper grain relative border-y px-5 py-24 sm:px-8"
+      style={{ borderColor: 'var(--line)' }}
+    >
       <div className="mx-auto max-w-7xl">
         {/* Head */}
         <motion.div
@@ -37,7 +41,7 @@ export function ProjectHighlight() {
             <span className="kicker" style={{ color: 'var(--fuchsia)' }}>
               Issue Nº01 — Contents
             </span>
-            <h2 className="font-editorial mt-3 text-5xl text-[#ECECF2] sm:text-7xl">
+            <h2 className="font-editorial mt-3 text-5xl sm:text-7xl">
               In this issue
             </h2>
           </div>
@@ -60,12 +64,12 @@ export function ProjectHighlight() {
               >
                 <a
                   href={entry.href}
-                  className="group grid grid-cols-[auto_1fr] items-baseline gap-x-5 border-t py-8 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] sm:grid-cols-[auto_1fr_auto] sm:gap-x-10"
-                  style={{ borderColor: 'var(--line)' }}
+                  className="ink-bleed group grid grid-cols-[auto_1fr] items-baseline gap-x-5 border-t py-8 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] sm:grid-cols-[auto_1fr_auto] sm:gap-x-10"
+                  style={{ borderColor: 'var(--line)', ['--bleed' as string]: accent }}
                 >
-                  {/* Issue number */}
+                  {/* Folio number — oversized, CMYK misregistered */}
                   <span
-                    className="font-editorial text-2xl leading-none transition-colors sm:text-3xl"
+                    className="reg font-editorial text-5xl leading-none transition-colors sm:text-7xl"
                     style={{ color: accent }}
                   >
                     {entry.no}
@@ -74,11 +78,11 @@ export function ProjectHighlight() {
                   {/* Title + dek */}
                   <div className="min-w-0">
                     <h3
-                      className="font-editorial text-4xl leading-[0.95] text-[#ECECF2] transition-colors duration-300 group-hover:text-[color:var(--accent)] sm:text-6xl"
+                      className="font-editorial text-4xl leading-[0.95] transition-colors duration-300 group-hover:text-[color:var(--accent)] sm:text-6xl"
                     >
                       {entry.title}
                     </h3>
-                    <p className="mt-3 max-w-xl text-sm leading-relaxed text-[#a9a9b6] sm:text-base">
+                    <p className="mt-3 max-w-xl text-sm leading-relaxed text-[#57534e] sm:text-base">
                       {entry.dek}
                     </p>
                   </div>
@@ -109,14 +113,17 @@ export function ProjectHighlight() {
           initial={{ opacity: 0, y: 22 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.45 }}
-          style={{ ['--accent' as string]: ACCENT_HEX[toolbox.accent] }}
-          className="group mt-6 grid grid-cols-[auto_1fr_auto] items-center gap-5 overflow-hidden rounded-2xl border p-6 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] sm:gap-8 sm:p-8"
+          style={{
+            ['--accent' as string]: ACCENT_HEX[toolbox.accent],
+            background: 'var(--ink)',
+          }}
+          className="group mt-8 grid grid-cols-[auto_1fr_auto] items-center gap-5 overflow-hidden rounded-2xl p-6 text-[#ECECF2] shadow-[0_20px_60px_-30px_rgba(11,11,18,0.5)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] sm:gap-8 sm:p-8"
         >
           {/* Glyph */}
           <span
             className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl sm:h-20 sm:w-20"
             style={{
-              background: `radial-gradient(120% 120% at 30% 20%, ${ACCENT_HEX[toolbox.accent]}30, transparent 65%), var(--ink)`,
+              background: `radial-gradient(120% 120% at 30% 20%, ${ACCENT_HEX[toolbox.accent]}30, transparent 65%), var(--ink-3)`,
               color: ACCENT_HEX[toolbox.accent],
             }}
           >

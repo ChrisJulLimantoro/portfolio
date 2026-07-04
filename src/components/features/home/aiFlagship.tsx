@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Github, ArrowUpRight, ShieldCheck } from 'lucide-react';
 import { getFlagship } from '@/lib/data';
+import { AnimatedNumber } from '@/components/ui/animatedNumber';
 
 /**
  * Dedicated AI × Automation flagship: the agentic AI Trader.
@@ -36,7 +37,7 @@ export function AiFlagship() {
         >
           <div>
             <span className="kicker" style={{ color: 'var(--fuchsia)' }}>
-              Flagship — AI × Automation
+              Flagship — AI × Automation<span className="caret" aria-hidden />
             </span>
             <h2 className="font-editorial mt-3 text-6xl text-[#ECECF2] sm:text-8xl">
               AI Trader
@@ -61,7 +62,7 @@ export function AiFlagship() {
               {flagship.stats.map((s) => (
                 <div key={s.l}>
                   <dt className="font-editorial text-4xl text-[#ffb627]">
-                    {s.v}
+                    <AnimatedNumber value={s.v} />
                   </dt>
                   <dd className="kicker mt-1" style={{ color: 'var(--hush)' }}>
                     {s.l}
