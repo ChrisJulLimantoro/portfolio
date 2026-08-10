@@ -52,7 +52,7 @@ export function CodeWindow({
     if (typeof window === 'undefined') return;
     const mq = window.matchMedia('(max-width: 767px)');
     const handler = (e: MediaQueryListEvent | MediaQueryList) =>
-      setIsMobile(Boolean((e as any).matches ?? e.matches));
+      setIsMobile(e.matches);
     // initial
     setIsMobile(mq.matches);
     // add listener (modern + fallback)
@@ -183,7 +183,6 @@ export function CodeWindow({
     typeFilename();
 
     return () => clearAllTimers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     snippetIndex,
     snippets,

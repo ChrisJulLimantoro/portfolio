@@ -1,4 +1,5 @@
 import { getJourneyData, getProjects, getBlogPosts } from '@/lib/data';
+import { CONTACT, GMAIL_COMPOSE_URL } from '@/lib/contact';
 
 /**
  * Full portfolio context for the chat model.
@@ -45,7 +46,7 @@ export function getPortfolioContext(): string {
          Achievements: ${j.achievements.map((a) => a.title).join('; ')}
          Detailed Story: ${j.story
            .filter((s) => s.type === 'text')
-           .map((s: any) => s.content)
+           .map((s) => s.content)
            .join('\n')}`
     )
     .join('\n\n');
@@ -69,10 +70,11 @@ Current Role: Software Engineer at GDP Labs & Researcher at Apple RnL.
 Values: "Leadership is service", "The best way to predict the future is to create it."
 
 Contact Information:
-- Email: chrisjullimantoro@gmail.com
-- LinkedIn: linkedin.com/in/chris-julius-limantoro
-- GitHub: github.com/ChrisJulLimantoro
-- CV Download: /resume.pdf
+- Email: ${CONTACT.email}
+- Compose in Gmail: ${GMAIL_COMPOSE_URL}
+- LinkedIn: ${CONTACT.linkedin}
+- GitHub: ${CONTACT.github}
+- CV Download: ${CONTACT.resume}
 
 === PROJECTS ===
 ${projectContext}

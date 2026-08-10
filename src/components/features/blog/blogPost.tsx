@@ -73,7 +73,7 @@ export function BlogPost({ post }: { post: BlogPost }) {
                 rehypePlugins={[rehypeHighlight, rehypeRaw]}
                 components={{
                   // Custom link component (open external links in new tab)
-                  a({ node, children, href, ...props }) {
+                  a({ children, href, ...props }) {
                     const isExternal = href?.startsWith('http');
                     return (
                       <a
@@ -87,7 +87,7 @@ export function BlogPost({ post }: { post: BlogPost }) {
                     );
                   },
                   // Add spacing after paragraphs inside list items
-                  p({ node, children, ...props }) {
+                  p({ children, ...props }) {
                     return <p className="mb-4" {...props}>{children}</p>;
                   },
                 }}

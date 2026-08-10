@@ -42,6 +42,7 @@ export default function RootLayout({
     // Added lang="en" to html tag
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       className={`${spaceGrotesk.variable} ${caveat.variable} ${bricolage.variable}`}
     >
       <body className="min-h-screen bg-[#0b0b12] text-[#ECECF2]">

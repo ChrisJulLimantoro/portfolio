@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useRef, useEffect, type ComponentPropsWithoutRef } from 'react';
+import { motion } from 'framer-motion';
 import { Send, Sparkles, User, Bot, Trash2, Copy, Check, X, ArrowLeft } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -296,7 +296,7 @@ export default function ChatPage() {
                                     </a>
                                   );
                                 },
-                                code: ({ inline, ...props }: any) => (
+                                code: ({ inline, ...props }: ComponentPropsWithoutRef<'code'> & { inline?: boolean }) => (
                                   inline ?
                                     <code className="bg-[#1c1c2b] px-1.5 py-0.5 rounded text-[#c6f24e] text-xs" {...props} /> :
                                     <code className="block bg-[#1c1c2b] p-3 rounded my-2 text-xs" {...props} />

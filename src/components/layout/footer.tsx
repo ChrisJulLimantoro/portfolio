@@ -1,14 +1,15 @@
 import { Github, Linkedin, Mail, FileText } from 'lucide-react';
+import { CONTACT, GMAIL_COMPOSE_URL } from '@/lib/contact';
 
 const socials = [
-  { Icon: Github, href: 'https://github.com/ChrisJulLimantoro', label: 'GitHub' },
+  { Icon: Github, href: CONTACT.github, label: 'GitHub' },
   {
     Icon: Linkedin,
-    href: 'https://linkedin.com/in/christopher-julius-limantoro',
+    href: CONTACT.linkedin,
     label: 'LinkedIn',
   },
-  { Icon: Mail, href: 'mailto:christopherlimantoro@gmail.com', label: 'Email' },
-  { Icon: FileText, href: '/resume.pdf', label: 'Resume' },
+  { Icon: Mail, href: GMAIL_COMPOSE_URL, label: 'Email' },
+  { Icon: FileText, href: CONTACT.resume, label: 'Resume' },
 ];
 
 export function Footer() {
@@ -25,7 +26,9 @@ export function Footer() {
               Let&apos;s build something
             </span>
             <a
-              href="mailto:christopherlimantoro@gmail.com"
+              href={GMAIL_COMPOSE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="font-editorial link-wipe mt-3 block text-5xl text-[#ECECF2] sm:text-7xl"
             >
               Say hello →

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight, Github, Maximize2, X, Sparkles } from 'lucide-react';
 import { getNovelgit } from '@/lib/data';
@@ -9,20 +9,32 @@ import { BrowserFrame } from '@/components/ui/browserFrame';
 export function NovelgitFeature() {
   const n = getNovelgit();
   const [zoom, setZoom] = useState(false);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Lock scroll while the zoom modal is open.
+  // Lock scroll and move focus into the dialog while it is open.
   useEffect(() => {
-    document.body.style.overflow = zoom ? 'hidden' : '';
+    if (!zoom) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    document.body.style.overflow = 'hidden';
+    closeButtonRef.current?.focus();
+
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = previousOverflow;
+      previouslyFocused?.focus();
     };
   }, [zoom]);
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setZoom(false);
+    if (!zoom) return;
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setZoom(false);
+    };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  }, [zoom]);
 
   return (
     <section id="novelgit" className="relative scroll-mt-24 px-5 py-24 sm:px-8">
@@ -148,6 +160,10 @@ export function NovelgitFeature() {
           <motion.div
             className="fixed inset-0 z-[70] flex items-center justify-center p-3 sm:p-6"
             style={{ background: 'rgba(5,5,10,0.85)' }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="novelgit-dialog-title"
+            aria-describedby="novelgit-dialog-description"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -161,6 +177,12 @@ export function NovelgitFeature() {
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
               onClick={(e) => e.stopPropagation()}
             >
+              <h2 id="novelgit-dialog-title" className="sr-only">
+                NovelGit live preview
+              </h2>
+              <p id="novelgit-dialog-description" className="sr-only">
+                Interactive preview of the NovelGit website.
+              </p>
               <BrowserFrame url={getNovelgit().live} title="NovelGit — live">
                 <iframe
                   src={getNovelgit().live}
@@ -178,6 +200,7 @@ export function NovelgitFeature() {
                   Open in a new tab <ArrowUpRight size={15} />
                 </a>
                 <button
+                  ref={closeButtonRef}
                   onClick={() => setZoom(false)}
                   className="inline-flex items-center gap-2 rounded-full border px-4 py-2 font-sans text-sm text-[#ECECF2] transition-colors hover:border-[#ff3d81]"
                   style={{ borderColor: 'var(--line)' }}

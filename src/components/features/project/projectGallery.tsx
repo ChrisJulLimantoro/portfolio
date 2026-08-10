@@ -46,11 +46,10 @@ export function ProjectGallery({ images, title, accent = '#ffb627' }: ProjectGal
         })
       );
 
-      const nextOrientations = { ...detectedOrientations };
-      results.forEach(res => {
-        nextOrientations[res.url] = res.orientation;
-      });
-      setDetectedOrientations(nextOrientations);
+      setDetectedOrientations((current) => ({
+        ...current,
+        ...Object.fromEntries(results.map(({ url, orientation }) => [url, orientation])),
+      }));
     };
 
     detectMissingOrientations();
@@ -83,18 +82,12 @@ export function ProjectGallery({ images, title, accent = '#ffb627' }: ProjectGal
    * We'll try to group items into 4-column blocks.
    */
   const rearrangedItems = useMemo<GalleryItem[]>(() => {
-    const portraitPool = processedItems.filter(item => item.orientation === 'portrait');
-    const landscapePool = processedItems.filter(item => item.orientation === 'landscape');
-    const squarePool = processedItems.filter(item => item.orientation === 'square');
-    
     const result: GalleryItem[] = [];
-    const usedIndices = new Set<number>();
 
     // 1. Pick a Hero (first image usually)
     if (processedItems.length > 0) {
       const hero = processedItems[0];
       result.push(hero);
-      usedIndices.add(hero.originalIndex);
     }
 
     // 2. Fill the rest by trying to balance orientations
@@ -145,7 +138,7 @@ export function ProjectGallery({ images, title, accent = '#ffb627' }: ProjectGal
 
   // Generate grid classes based on orientation and position
   const getGridClasses = (index: number, orientation: Orientation) => {
-    let baseClasses = "relative overflow-hidden rounded-2xl border border-[color:var(--line)] group shadow-2xl cursor-pointer bg-[var(--ink-2)] min-h-[200px]";
+    const baseClasses = "relative overflow-hidden rounded-2xl border border-[color:var(--line)] group shadow-2xl cursor-pointer bg-[var(--ink-2)] min-h-[200px]";
     
     // Hero item (usually first)
     if (index === 0) {

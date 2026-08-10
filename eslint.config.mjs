@@ -1,27 +1,18 @@
-// eslint.config.js
+import { defineConfig, globalIgnores } from 'eslint/config';
+import nextVitals from 'eslint-config-next/core-web-vitals';
+import nextTypeScript from 'eslint-config-next/typescript';
+import prettier from 'eslint-config-prettier/flat';
 
-import globals from 'globals';
-import pluginJs from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import pluginReactConfig from 'eslint-plugin-react/configs/recommended.js';
-import nextPlugin from '@next/eslint-plugin-next';
-import eslintConfigPrettier from 'eslint-config-prettier';
-
-export default [
-  { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
-  { languageOptions: { globals: globals.browser } },
-  pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
-  pluginReactConfig,
+export default defineConfig([
+  ...nextVitals,
+  ...nextTypeScript,
   {
-    plugins: {
-      '@next/next': nextPlugin,
-    },
     rules: {
-      ...nextPlugin.configs.recommended.rules,
-      ...nextPlugin.configs['core-web-vitals'].rules,
+      // Hydration and browser-API synchronization in this app intentionally
+      // initializes client state from effects.
+      'react-hooks/set-state-in-effect': 'off',
     },
   },
-  // Make sure Prettier is the last one to override other configs
-  eslintConfigPrettier,
-];
+  prettier,
+  globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts']),
+]);

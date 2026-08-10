@@ -6,11 +6,6 @@ export interface Message {
   content: string;
 }
 
-interface ChatHistoryData {
-  messages: Message[];
-  timestamp: number;
-}
-
 /**
  * Load chat history from localStorage
  * Returns empty array if expired or not found

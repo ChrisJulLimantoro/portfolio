@@ -1,6 +1,6 @@
 import animate from 'tailwindcss-animate';
 
-export default {
+const tailwindConfig = {
   content: [
     './src/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -17,3 +17,5 @@ export default {
   },
   plugins: [animate],
 };
+
+export default tailwindConfig;

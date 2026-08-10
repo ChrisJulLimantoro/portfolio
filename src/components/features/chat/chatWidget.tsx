@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, type ComponentPropsWithoutRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Sparkles, User, Bot, ChevronDown, Maximize2, ExternalLink, Trash2, AlertTriangle, Clock, CornerDownRight } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -405,7 +405,7 @@ export function ChatWidget() {
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{
-                          a: ({ node, href, children, ...props }) => {
+                          a: ({ href, children, ...props }) => {
                             if (isInternal(href)) {
                               return (
                                 <a
@@ -425,7 +425,7 @@ export function ChatWidget() {
                               </a>
                             );
                           },
-                          code: ({ inline, ...props }: any) =>
+                          code: ({ inline, ...props }: ComponentPropsWithoutRef<'code'> & { inline?: boolean }) =>
                             inline ? (
                               <code className="rounded px-1 py-0.5 text-[#34e0e0]" style={{ background: 'var(--ink-3)' }} {...props} />
                             ) : (

@@ -2,19 +2,12 @@ import { getBlogPosts, getBlogPostById } from '@/lib/data';
 import { BlogPost } from '@/components/features/blog/blogPost';
 import { TableOfContents } from '@/components/features/blog/tableOfContents';
 import { BlogCard } from '@/components/features/blog/blogCard';
-import { Badge } from '@/components/ui/badge';
 import { Sparkles, Calendar, Clock } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { notFound } from 'next/navigation';
-
-type BlogPostPageProps = {
-  params: {
-    id: string;
-  };
-};
 
 /**
  * Dynamic Blog Post Page - Server Component
