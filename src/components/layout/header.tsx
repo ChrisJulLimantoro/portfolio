@@ -38,6 +38,8 @@ export function Header() {
     { name: 'Ask AI', href: '/chat' },
   ];
 
+  if (pathname === '/chat') return null;
+
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-50">
       <AnimatePresence>

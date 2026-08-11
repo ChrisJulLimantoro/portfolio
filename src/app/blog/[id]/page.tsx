@@ -80,7 +80,7 @@ export default async function BlogPostPage({
       </div>
 
       {/* Article Content with TOC */}
-      <div className="relative py-12 px-6">
+      <div className="relative py-12 px-5 sm:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-[280px_1fr] gap-12">
             {/* Table of Contents - Left Sidebar */}

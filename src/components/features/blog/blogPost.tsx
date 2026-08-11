@@ -90,6 +90,18 @@ export function BlogPost({ post }: { post: BlogPost }) {
                   p({ children, ...props }) {
                     return <p className="mb-4" {...props}>{children}</p>;
                   },
+                  // Constrain fenced code blocks so long lines scroll instead of widening the page
+                  pre({ children, ...props }) {
+                    return (
+                      <pre
+                        className="my-10 overflow-x-auto rounded-xl border p-6"
+                        style={{ background: 'var(--ink-2)', borderColor: 'var(--line)' }}
+                        {...props}
+                      >
+                        {children}
+                      </pre>
+                    );
+                  },
                 }}
               >
                 {section.content}

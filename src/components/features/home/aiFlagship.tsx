@@ -122,7 +122,7 @@ export function AiFlagship() {
             }}
           >
             <span className="kicker" style={{ color: 'var(--hush)' }}>
-              The agent pipeline — hover a stage
+              The agent pipeline — tap or hover a stage
             </span>
 
             <ol className="mt-5 space-y-2">
@@ -131,6 +131,10 @@ export function AiFlagship() {
                 return (
                   <li key={stage.label}>
                     <button
+                      onClick={() => {
+                        setActive(i);
+                        setPinned((p) => !(p && isOn));
+                      }}
                       onMouseEnter={() => {
                         setActive(i);
                         setPinned(true);

@@ -153,7 +153,7 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0b0b12] flex flex-col pt-14">
+    <div className="min-h-screen bg-[#0b0b12] flex flex-col">
       {/* Header */}
       <header className="sticky top-0 z-10 backdrop-blur-xl border-b" style={{ background: 'color-mix(in srgb, var(--ink) 80%, transparent)', borderColor: 'var(--line)' }}>
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">

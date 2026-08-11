@@ -57,7 +57,7 @@ export function ZigzagYear({ data }: { data: JourneyYear }) {
         </div>
 
         {/* Photo stack — white frames as deliberate print contrast */}
-        <div className="relative order-1 h-[500px] md:order-2">
+        <div className="relative order-1 h-[340px] md:order-2 md:h-[500px]">
           {data.photos.map((photo, idx) => (
             <motion.div
               key={idx}
@@ -65,7 +65,7 @@ export function ZigzagYear({ data }: { data: JourneyYear }) {
               whileInView={{ opacity: 1, y: 0, rotate: photo.rotate || '0deg' }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 + idx * 0.1 }}
-              className="absolute left-10 top-1/4 w-64 rounded-xl bg-white p-2 shadow-2xl transition-all duration-300 hover:z-10 hover:rotate-0 hover:scale-105 md:left-20 md:w-80"
+              className="absolute left-1/2 top-[8%] w-56 -translate-x-1/2 rounded-xl bg-white p-2 shadow-2xl transition-all duration-300 hover:z-10 hover:rotate-0 hover:scale-105 md:left-20 md:top-1/4 md:w-80 md:translate-x-0"
               style={{ zIndex: idx, marginLeft: idx * 20, marginTop: idx * -30 }}
             >
               <div className="relative aspect-[4/5] overflow-hidden rounded-lg">
